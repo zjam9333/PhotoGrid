@@ -7,44 +7,23 @@
 
 import UIKit
 
-enum Grid {
-    class Item: Hashable {
-        
-        let key = UUID()
-        var content: Any? = nil
-        
-        var asLine: Divider? {
-            return self as? Divider
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(key)
-        }
-        
-        static func == (lhs: Grid.Item, rhs: Grid.Item) -> Bool {
-            return lhs.key == rhs.key
-        }
-    }
-    
-    class Divider: Item {
-        var line: GGLine
-        var left: Item
-        var right: Item
-        
-        init(line: GGLine, left: Item = .init(), right: Item = .init()) {
-            self.line = line
-            self.left = left
-            self.right = right
-        }
-    }
-}
-
 class PhotoGridView: UIView {
     
-    var cachePolyViews: [Grid.Item: MaskPolygonView] = [:]
+    private var cachePolyViews: [GridItem: MaskPolygonView] = [:]
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let overlayView = ShapeOverlayView()
+    private let contentView = UIView()
+    
+    private var currentOverlayItem: GridItem? = nil
+    
+    var item: GridItem
+    
+    init(item: GridItem) {
+        self.item = item
+        super.init(frame: .zero)
+        addSubview(contentView)
+        addSubview(overlayView)
+        overlayView.isUserInteractionEnabled = false
     }
     
     required init?(coder: NSCoder) {
@@ -53,22 +32,11 @@ class PhotoGridView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        overlayView.frame = bounds
+        contentView.frame = bounds
     }
     
     func refreshSubviewsFrame() {
-        testLines()
-    }
-    
-    private func testLines() {
-        let line0 = GGLine(x1: 0, y1: bounds.size.height / 3, x2: bounds.size.width, y2: bounds.size.height / 4)
-        let item = Grid.Divider(line: line0)
-        
-        let line1 = GGLine(x1: bounds.size.width / 3, y1: 0, x2: bounds.size.width / 3 - 40, y2: bounds.size.height).reverted()
-        item.left = Grid.Divider(line: line1)
-//
-        let line2 = GGLine(x1: bounds.size.width / 3 + 40, y1: 0, x2: bounds.size.width / 3 + 40 + 40, y2: bounds.size.height).reverted()
-        item.right = Grid.Divider(line: line2)
-        
         let poly = [
             bounds.topLeft,
             bounds.bottomLeft,
@@ -81,21 +49,40 @@ class PhotoGridView: UIView {
     
     private var randomColor = PresetColors()
     
-    private func draw(polygon: [CGPoint], item: Grid.Item, parentLine: Grid.Divider?) {
-        guard let item = item as? Grid.Divider else {
+    private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
+        guard let item = item as? GridDivider else {
             var poly: MaskPolygonView? = cachePolyViews[item]
             if poly == nil {
                 let polyView = MaskPolygonView()
-                addSubview(polyView)
+                contentView.addSubview(polyView)
                 polyView.backgroundColor = randomColor.next()
                 cachePolyViews[item] = polyView
                 poly = polyView
             }
-            poly?.setPolygon(points: polygon)
+            guard let poly = poly else {
+                return
+            }
+            
+            let notEnough = polygon.count < 3 // 至少要3角形
+            poly.isHidden = notEnough
+            
+            poly.setPolygon(points: polygon)
+            poly.onTap = { [weak self] in
+                if item == self?.currentOverlayItem {
+                    self?.currentOverlayItem = nil
+                    self?.overlayView.overlayPolygon = []
+                } else {
+                    self?.currentOverlayItem = item
+                    self?.overlayView.overlayPolygon = polygon
+                }
+            }
+            if (item == currentOverlayItem) {
+                overlayView.overlayPolygon = polygon
+            }
             return
         }
         
-        let line = item.line
+        let line = item.line.offset(item.offset)
         
         let edges = polygon.toEdges()
         let intersects: [CGPoint] = edges.compactMap { e in

@@ -18,6 +18,8 @@
 		1C2D95012D5DEB4700130FBB /* MathTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95002D5DEB4700130FBB /* MathTools.swift */; };
 		1C2D95032D5DFFF200130FBB /* MaskPolygonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95022D5DFFF200130FBB /* MaskPolygonView.swift */; };
 		1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95042D5F2EAA00130FBB /* PresetColors.swift */; };
+		1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */; };
+		1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95082D5F501B00130FBB /* GridItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,10 @@
 		1C2D95002D5DEB4700130FBB /* MathTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathTools.swift; sourceTree = "<group>"; };
 		1C2D95022D5DFFF200130FBB /* MaskPolygonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskPolygonView.swift; sourceTree = "<group>"; };
 		1C2D95042D5F2EAA00130FBB /* PresetColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetColors.swift; sourceTree = "<group>"; };
+		1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeOverlayView.swift; sourceTree = "<group>"; };
+		1C2D95082D5F501B00130FBB /* GridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridItem.swift; sourceTree = "<group>"; };
+		1C2D950B2D5F56ED00130FBB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1C2D950C2D5F575700130FBB /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +56,8 @@
 		1C2D94DA2D5DC78B00130FBB = {
 			isa = PBXGroup;
 			children = (
+				1C2D950B2D5F56ED00130FBB /* README.md */,
+				1C2D950C2D5F575700130FBB /* testimg.jpg */,
 				1C2D94E52D5DC78B00130FBB /* PhotoGridTest */,
 				1C2D94E42D5DC78B00130FBB /* Products */,
 			);
@@ -85,6 +93,8 @@
 				1C2D95002D5DEB4700130FBB /* MathTools.swift */,
 				1C2D95022D5DFFF200130FBB /* MaskPolygonView.swift */,
 				1C2D95042D5F2EAA00130FBB /* PresetColors.swift */,
+				1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */,
+				1C2D95082D5F501B00130FBB /* GridItem.swift */,
 			);
 			path = PhotoGridView;
 			sourceTree = "<group>";
@@ -166,6 +176,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */,
 				1C2D94EB2D5DC78B00130FBB /* ViewController.swift in Sources */,
 				1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */,
 				1C2D94FC2D5DD4FA00130FBB /* PhotoGridView.swift in Sources */,
@@ -173,6 +184,7 @@
 				1C2D94E72D5DC78B00130FBB /* AppDelegate.swift in Sources */,
 				1C2D94E92D5DC78B00130FBB /* SceneDelegate.swift in Sources */,
 				1C2D95012D5DEB4700130FBB /* MathTools.swift in Sources */,
+				1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

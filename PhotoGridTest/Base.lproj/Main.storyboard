@@ -24,12 +24,23 @@
                                     <action selector="buttonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g3G-Z9-tgo"/>
                                 </connections>
                             </button>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="-200" maxValue="200" translatesAutoresizingMaskIntoConstraints="NO" id="Edp-7R-myB">
+                                <rect key="frame" x="44.666666666666657" y="663" width="304" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="HuC-Oi-LJV"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="sliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="RZG-qI-f0G"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="3lG-zL-xxA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="2tT-aF-yM4"/>
+                            <constraint firstItem="Edp-7R-myB" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="BJC-H7-7sX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3lG-zL-xxA" secondAttribute="bottom" constant="64" id="Ua1-X2-MRz"/>
+                            <constraint firstItem="3lG-zL-xxA" firstAttribute="top" secondItem="Edp-7R-myB" secondAttribute="bottom" constant="26" id="hlL-ae-yxP"/>
                         </constraints>
                     </view>
                 </viewController>

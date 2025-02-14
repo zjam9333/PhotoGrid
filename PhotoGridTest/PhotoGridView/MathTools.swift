@@ -181,6 +181,10 @@ struct GGLine {
     var p1: CGPoint
     var p2: CGPoint
     
+    func offset(_ offset: CGVector) -> GGLine {
+        return .init(x1: p1.x + offset.dx, y1: p1.y + offset.dy, x2: p2.x + offset.dx, y2: p2.y + offset.dy)
+    }
+    
     func reverted() -> GGLine {
         return .init(p1: p2, p2: p1)
     }

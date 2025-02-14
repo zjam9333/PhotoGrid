@@ -12,10 +12,15 @@ class MaskPolygonView: UIView {
     
     private let maskLayer = CAShapeLayer()
     
+    var onTap: (() -> Void)? = nil
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.mask = maskLayer
         layer.masksToBounds = true
+        
+        let tapG = UITapGestureRecognizer(target: self, action: #selector(onTapGesture))
+        addGestureRecognizer(tapG)
     }
     
     required init?(coder: NSCoder) {
@@ -58,9 +63,7 @@ class MaskPolygonView: UIView {
         return super.hitTest(point, with: event)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // test
-        print("ok", "touchesBegan", self, Date())
-        super.touchesBegan(touches, with: event)
+    @objc func onTapGesture() {
+        onTap?()
     }
 }
