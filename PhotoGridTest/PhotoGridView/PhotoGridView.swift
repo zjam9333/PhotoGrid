@@ -9,7 +9,9 @@ import UIKit
 
 class PhotoGridView: UIView {
     
-    private var cachePolyViews: [GridItem: MaskPolygonView] = [:]
+    var borderWidth: CGFloat = 0;
+    
+    private var cachePolyViews: [GridItem: ImagePolygonView] = [:]
     
     private let overlayView = ShapeOverlayView()
     private let contentView = UIView()
@@ -51,9 +53,9 @@ class PhotoGridView: UIView {
     
     private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
         guard let item = item as? GridDivider else {
-            var poly: MaskPolygonView? = cachePolyViews[item]
+            var poly: ImagePolygonView? = cachePolyViews[item]
             if poly == nil {
-                let polyView = MaskPolygonView()
+                let polyView = ImagePolygonView()
                 contentView.addSubview(polyView)
                 polyView.backgroundColor = randomColor.next()
                 cachePolyViews[item] = polyView
@@ -66,7 +68,7 @@ class PhotoGridView: UIView {
             let notEnough = polygon.count < 3 // 至少要3角形
             poly.isHidden = notEnough
             
-            poly.setPolygon(points: polygon)
+            poly.setPolygon(points: polygon, borderWidth: borderWidth)
             poly.onTap = { [weak self] in
                 if item == self?.currentOverlayItem {
                     self?.currentOverlayItem = nil
@@ -85,11 +87,13 @@ class PhotoGridView: UIView {
         let line = item.line.offset(item.offset)
         
         let edges = polygon.toEdges()
+        let polygonOuterRect = CGRect(top: polygon.top ?? 0, left: polygon.left ?? 0, bottom: polygon.bottom ?? 0, right: polygon.right ?? 0).insetBy(dx: -1, dy: -1)
+        
         let intersects: [CGPoint] = edges.compactMap { e in
             guard let p = line.intersection(other: e) else {
                 return nil
             }
-            if p.almostLiesInside(polygon: polygon) {
+            if polygonOuterRect.contains(p) && p.almostLiesInside(polygon: polygon) {
                 return p
             }
             return nil
@@ -110,5 +114,57 @@ class PhotoGridView: UIView {
         
         draw(polygon: subPolygon0.sortClockwise(), item: item.left, parentLine: item)
         draw(polygon: subPolygon1.sortClockwise() ,item: item.right, parentLine: item)
+    }
+}
+
+fileprivate class ImagePolygonView: MaskPolygonView, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    let imageView = UIImageView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(imageView)
+        imageView.contentMode = .scaleAspectFill
+        imageView.snp.makeConstraints { make in
+            make.edges.equalTo(0)
+        }
+        
+        let tapG = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress(gesture:)))
+        addGestureRecognizer(tapG)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func onLongPress(gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .recognized else {
+            return
+        }
+        
+        print("onLongPress")
+        pickImage()
+    }
+    
+    private func pickImage() {
+        // 检查设备是否支持从相册选取图片
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.delegate = self
+            UIApplication.shared.keyWindow?.rootViewController?.present(imagePicker, animated: true)
+        }
+    }
+    
+    // 实现 UIImagePickerControllerDelegate 协议方法，处理用户选择图片的操作
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let selectedImage = info[.originalImage] as? UIImage {
+            imageView.image = selectedImage
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    // 实现 UIImagePickerControllerDelegate 协议方法，处理用户取消选择的操作
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }

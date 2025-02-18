@@ -83,6 +83,40 @@ extension Array where Element == CGPoint {
         }
         return res
     }
+    
+    func shrinkPolygon(_ polygon: [CGPoint], by distance: CGFloat) -> [CGPoint] {
+        var shrunkPoints: [CGPoint] = []
+        let count = polygon.count
+        
+        for i in 0..<count {
+            let prevIndex = (i - 1 + count) % count
+            let nextIndex = (i + 1) % count
+            
+            let prevPoint = polygon[prevIndex]
+            let currentPoint = polygon[i]
+            let nextPoint = polygon[nextIndex]
+            
+            // 计算相邻边的向量
+            let vector1 = CGPoint(x: currentPoint.x - prevPoint.x, y: currentPoint.y - prevPoint.y)
+            let vector2 = CGPoint(x: nextPoint.x - currentPoint.x, y: nextPoint.y - currentPoint.y)
+            
+            // 计算单位法向量
+            let normal1 = CGPoint(x: -vector1.y, y: vector1.x).normalized()
+            let normal2 = CGPoint(x: -vector2.y, y: vector2.x).normalized()
+            
+            // 计算角平分线向量
+            let bisector = CGPoint(x: normal1.x + normal2.x, y: normal1.y + normal2.y).normalized()
+            
+            // 计算新的顶点位置
+            let newX = currentPoint.x + bisector.x * distance
+            let newY = currentPoint.y + bisector.y * distance
+            let newPoint = CGPoint(x: newX, y: newY)
+            
+            shrunkPoints.append(newPoint)
+        }
+        
+        return shrunkPoints
+    }
 }
 
 extension CGRect {
@@ -174,6 +208,14 @@ extension CGPoint {
             return true
         }
         return false
+    }
+    
+    func normalized() -> CGPoint {
+        let length = sqrt(x * x + y * y)
+        if length == 0 {
+            return self
+        }
+        return CGPoint(x: x / length, y: y / length)
     }
 }
 
