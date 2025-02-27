@@ -54,17 +54,13 @@ class PhotoGridView: UIView {
     
     private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
         guard let item = item as? GridDivider else {
-            var poly: ImagePolygonView? = cachePolyViews[item]
-            if poly == nil {
+            let poly: ImagePolygonView = cachePolyViews[item] ?? {
                 let polyView = ImagePolygonView()
                 contentView.insertSubview(polyView, at: 0)
                 polyView.backgroundColor = randomColor.next()
                 cachePolyViews[item] = polyView
-                poly = polyView
-            }
-            guard let poly = poly else {
-                return
-            }
+                return polyView
+            }()
             
             let notEnough = polygon.count < 3 // 至少要3角形
             poly.isHidden = notEnough
@@ -104,8 +100,8 @@ class PhotoGridView: UIView {
             let dragView = DragControl()
             contentView.addSubview(dragView)
             dragView.backgroundColor = .gray
-            dragView.frame = CGRect(origin: line.center, size: .init(width: 20, height: 20))
-            dragView.layer.cornerRadius = 10
+            dragView.frame = CGRect(origin: line.center, size: .init(width: 30, height: 30))
+            dragView.layer.cornerRadius = 15
             dragView.onDrag = { [weak self] touch in
                 let pointInSelf = touch.location(in: self)
                 let center = item.line.center

@@ -21,7 +21,6 @@ class ViewController: UIViewController {
     
     var item: GridDivider!
     var redView: PhotoGridView!
-    var lines: [Int: GridItem] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,13 +39,6 @@ class ViewController: UIViewController {
         let line3 = GGLine(x1: 0 + 40, y1: bounds.size.height / 3 * 2, x2: bounds.size.width, y2: bounds.size.height / 3 * 1.5)
         item.right.asDivider?.right = GridDivider(line: line3)
         
-        lines = [
-            0: item,
-            1: item.left,
-            2: item.right,
-            3: item.right.asDivider!.right,
-        ]
-        
         print("hello world")
         
         redView = PhotoGridView(item: item)
@@ -58,26 +50,11 @@ class ViewController: UIViewController {
             make.top.equalTo(view).offset(100)
             make.width.height.equalTo(320)
         }
+//        redView.transform = .init(scaleX: 0.5, y: 0.5)
         
         DispatchQueue.main.async { [self] in
             redView.refreshSubviewsFrame()
         }
-    }
-    
-    @IBAction func sliderValueChanged(_ sender: UISlider) {
-        guard let li = lines[sender.tag] as? GridDivider else {
-            return
-        }
-        let p1 = li.line.p1
-        let p2 = li.line.p2
-        let delDx = abs(p1.x - p2.x)
-        let delDy = abs(p1.y - p2.y)
-        if (delDx < delDy) {
-            li.offset.dx = .init(sender.value)
-        } else {
-            li.offset.dy = .init(sender.value)
-        }
-        redView.refreshSubviewsFrame()
     }
     
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
