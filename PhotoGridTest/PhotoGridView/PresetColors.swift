@@ -9,7 +9,7 @@ import UIKit
 
 struct PresetColors {
     let colors: [UIColor] = [
-        .red, .green, .blue, .cyan, .magenta, .yellow, .black,
+        .red, .green, .blue, .cyan, .magenta, .yellow, .brown,
     ]
     
     var curr = 0

@@ -12,6 +12,7 @@ class PhotoGridView: UIView {
     var borderWidth: CGFloat = 0;
     
     private var cachePolyViews: [GridItem: ImagePolygonView] = [:]
+    private var cacheDragControl: [GridItem: DragControl] = [:]
     
     private let overlayView = ShapeOverlayView()
     private let contentView = UIView()
@@ -56,7 +57,7 @@ class PhotoGridView: UIView {
             var poly: ImagePolygonView? = cachePolyViews[item]
             if poly == nil {
                 let polyView = ImagePolygonView()
-                contentView.addSubview(polyView)
+                contentView.insertSubview(polyView, at: 0)
                 polyView.backgroundColor = randomColor.next()
                 cachePolyViews[item] = polyView
                 poly = polyView
@@ -97,6 +98,30 @@ class PhotoGridView: UIView {
                 return p
             }
             return nil
+        }
+        
+        let drag: DragControl = cacheDragControl[item] ?? {
+            let dragView = DragControl()
+            contentView.addSubview(dragView)
+            dragView.backgroundColor = .gray
+            dragView.frame = CGRect(origin: line.center, size: .init(width: 20, height: 20))
+            dragView.layer.cornerRadius = 10
+            dragView.onDrag = { [weak self] touch in
+                let pointInSelf = touch.location(in: self)
+                let center = item.line.center
+                let newOffset = CGVector(dx: pointInSelf.x - center.x, dy: pointInSelf.y - center.y)
+                item.offset = newOffset
+                self?.refreshSubviewsFrame()
+            }
+            dragView.transform = .init(rotationAngle: atan2(line.p1.x - line.p2.x, line.p2.y - line.p1.y) + .pi / 2)
+            cacheDragControl[item] = dragView
+            return dragView
+        }()
+        if intersects.count >= 2 {
+            drag.center = GGLine(p1: intersects[0], p2: intersects[1]).center
+            drag.isHidden = false
+        } else {
+            drag.isHidden = true
         }
         
         // 通过分割线划分两个新的多边形

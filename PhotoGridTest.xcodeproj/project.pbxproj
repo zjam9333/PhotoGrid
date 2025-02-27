@@ -20,6 +20,7 @@
 		1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95042D5F2EAA00130FBB /* PresetColors.swift */; };
 		1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */; };
 		1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95082D5F501B00130FBB /* GridItem.swift */; };
+		1CD622E92D704510006F0B25 /* DragControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD622E82D704510006F0B25 /* DragControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		1C2D95082D5F501B00130FBB /* GridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridItem.swift; sourceTree = "<group>"; };
 		1C2D950B2D5F56ED00130FBB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C2D950C2D5F575700130FBB /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
+		1CD622E82D704510006F0B25 /* DragControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				1C2D95042D5F2EAA00130FBB /* PresetColors.swift */,
 				1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */,
 				1C2D95082D5F501B00130FBB /* GridItem.swift */,
+				1CD622E82D704510006F0B25 /* DragControl.swift */,
 			);
 			path = PhotoGridView;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 				1C2D94E92D5DC78B00130FBB /* SceneDelegate.swift in Sources */,
 				1C2D95012D5DEB4700130FBB /* MathTools.swift in Sources */,
 				1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */,
+				1CD622E92D704510006F0B25 /* DragControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
