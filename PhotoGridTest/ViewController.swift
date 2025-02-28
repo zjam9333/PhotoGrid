@@ -10,7 +10,18 @@ import SnapKit
 
 class ViewController: UIViewController {
     
-    @IBAction func buttonTap(_ sender: Any) {
+    @IBAction func exportJson(_ sender: Any?) {
+        let json = gridJson.toJson()
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys]) else {
+            return
+        }
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            return
+        }
+        print("导出的json", jsonString)
+    }
+    
+    @IBAction func captureImage(_ sender: Any) {
         let renderer = UIGraphicsImageRenderer(size: redView.bounds.size)
         let image = renderer.image { [weak self] ctx in
             guard let view = self?.redView else {
@@ -22,7 +33,7 @@ class ViewController: UIViewController {
         print("image", image)
     }
     
-    var item: GridItem!
+    var gridJson: GridJson!
     var redView: PhotoGridView!
     
     override func viewDidLoad() {
@@ -104,20 +115,19 @@ class ViewController: UIViewController {
 """
         let dict = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!) as? [String: Any]
         
-        let obj = GridJson.create(fromJson: dict ?? [:])
-        item = obj.item
+        gridJson = GridJson.fromJson(dict ?? [:])
         
         print("hello world")
         
-        redView = PhotoGridView(item: item)
+        redView = PhotoGridView(item: gridJson.item)
         redView.borderWidth = 5
         view.addSubview(redView)
         
         redView.snp.makeConstraints { make in
             make.centerX.equalTo(view)
             make.top.equalTo(view).offset(100)
-            make.width.equalTo(obj.width)
-            make.height.equalTo(obj.height)
+            make.width.equalTo(gridJson.width)
+            make.height.equalTo(gridJson.height)
         }
 //        redView.transform = .init(scaleX: 0.5, y: 0.5)
         

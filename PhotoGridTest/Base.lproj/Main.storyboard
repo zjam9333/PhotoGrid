@@ -17,10 +17,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ayA-Jx-Uzs">
-                                <rect key="frame" x="110.00000000000001" y="667.66666666666663" width="173.33333333333337" height="86.333333333333371"/>
+                                <rect key="frame" x="110.00000000000001" y="613.33333333333337" width="173.33333333333337" height="140.66666666666663"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMD-1H-ioe">
+                                        <rect key="frame" x="44.333333333333343" y="0.0" width="129" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="导出json看看"/>
+                                        <connections>
+                                            <action selector="exportJson:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6Jw-y3-KIj"/>
+                                        </connections>
+                                    </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="2xh-t2-plo">
-                                        <rect key="frame" x="0.0" y="0.0" width="173.33333333333334" height="32"/>
+                                        <rect key="frame" x="0.0" y="54.333333333333258" width="173.33333333333334" height="32"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="描边粗细" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h9w-V9-XEb">
                                                 <rect key="frame" x="0.0" y="0.0" width="69.333333333333329" height="32"/>
@@ -37,11 +45,11 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3lG-zL-xxA">
-                                        <rect key="frame" x="28" y="52" width="145.33333333333334" height="34.333333333333343"/>
+                                        <rect key="frame" x="28" y="106.33333333333326" width="145.33333333333334" height="34.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="截图打断点看看"/>
                                         <connections>
-                                            <action selector="buttonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g3G-Z9-tgo"/>
+                                            <action selector="captureImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IL3-ad-S7o"/>
                                         </connections>
                                     </button>
                                 </subviews>

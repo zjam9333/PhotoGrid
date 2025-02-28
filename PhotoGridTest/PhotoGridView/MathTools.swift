@@ -223,6 +223,22 @@ struct GGLine {
     var p1: CGPoint
     var p2: CGPoint
     
+    var x1: CGFloat {
+        return p1.x
+    }
+    
+    var y1: CGFloat {
+        return p1.y
+    }
+    
+    var x2: CGFloat {
+        return p2.x
+    }
+    
+    var y2: CGFloat {
+        return p2.y
+    }
+    
     func offset(_ offset: CGVector) -> GGLine {
         return .init(x1: p1.x + offset.dx, y1: p1.y + offset.dy, x2: p2.x + offset.dx, y2: p2.y + offset.dy)
     }
@@ -279,6 +295,15 @@ struct GGLine {
     /// 判断点在线的哪边？
     /// How to tell whether a point is to the right or left side of a line
     /// https://stackoverflow.com/questions/1560492/how-to-tell-whether-a-point-is-to-the-right-or-left-side-of-a-line
+    /// ```
+    ///      p2
+    ///      ^
+    ///      |
+    ///  a   |   b
+    ///      |
+    ///      p1
+    /// ```
+    ///
     func sideOf(point: CGPoint) -> Side {
         let a = p1
         let b = p2
