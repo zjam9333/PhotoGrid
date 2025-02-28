@@ -11,8 +11,8 @@ class PhotoGridView: UIView {
     
     var borderWidth: CGFloat = 0;
     
-    private var cachePolyViews: [GridItem: ImagePolygonView] = [:]
-    private var cacheDragControl: [GridItem: DragControl] = [:]
+    private var cachePolyViews: [GridItem.Key: ImagePolygonView] = [:]
+    private var cacheDragControl: [GridItem.Key: DragControl] = [:]
     
     private let overlayView = ShapeOverlayView()
     private let contentView = UIView()
@@ -27,6 +27,10 @@ class PhotoGridView: UIView {
         addSubview(contentView)
         addSubview(overlayView)
         overlayView.isUserInteractionEnabled = false
+    }
+    
+    var snapshotView: UIView {
+        return contentView
     }
     
     required init?(coder: NSCoder) {
@@ -54,11 +58,11 @@ class PhotoGridView: UIView {
     
     private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
         guard let item = item as? GridDivider else {
-            let poly: ImagePolygonView = cachePolyViews[item] ?? {
+            let poly: ImagePolygonView = cachePolyViews[item.key] ?? {
                 let polyView = ImagePolygonView()
                 contentView.insertSubview(polyView, at: 0)
                 polyView.backgroundColor = randomColor.next()
-                cachePolyViews[item] = polyView
+                cachePolyViews[item.key] = polyView
                 return polyView
             }()
             
@@ -66,16 +70,23 @@ class PhotoGridView: UIView {
             poly.isHidden = notEnough
             
             poly.setPolygon(points: polygon, borderWidth: borderWidth)
-            poly.onTap = { [weak self] in
-                if item == self?.currentOverlayItem {
+            let controllableKeys: [Int] = (item as? GridPolygon)?.controllableKeys ?? []
+            poly.onTap = { [weak self, weak item] in
+                self?.cacheDragControl.values.forEach { drag in
+                    drag.isHidden = true
+                }
+                if item?.key == self?.currentOverlayItem?.key {
                     self?.currentOverlayItem = nil
                     self?.overlayView.overlayPolygon = []
                 } else {
                     self?.currentOverlayItem = item
                     self?.overlayView.overlayPolygon = polygon
+                    for key in controllableKeys {
+                        self?.cacheDragControl[key]?.isHidden = false
+                    }
                 }
             }
-            if (item == currentOverlayItem) {
+            if (item.key == currentOverlayItem?.key) {
                 overlayView.overlayPolygon = polygon
             }
             return
@@ -96,9 +107,9 @@ class PhotoGridView: UIView {
             return nil
         }
         
-        let drag: DragControl = cacheDragControl[item] ?? {
+        let drag: DragControl = cacheDragControl[item.key] ?? {
             let dragView = DragControl()
-            contentView.addSubview(dragView)
+            addSubview(dragView)
             dragView.backgroundColor = .gray
             dragView.frame = CGRect(origin: line.center, size: .init(width: 30, height: 30))
             dragView.layer.cornerRadius = 15
@@ -110,14 +121,15 @@ class PhotoGridView: UIView {
                 self?.refreshSubviewsFrame()
             }
             dragView.transform = .init(rotationAngle: atan2(line.p1.x - line.p2.x, line.p2.y - line.p1.y) + .pi / 2)
-            cacheDragControl[item] = dragView
+            cacheDragControl[item.key] = dragView
+            dragView.isHidden = true
             return dragView
         }()
         if intersects.count >= 2 {
             drag.center = GGLine(p1: intersects[0], p2: intersects[1]).center
-            drag.isHidden = false
+//            drag.isHidden = false
         } else {
-            drag.isHidden = true
+//            drag.isHidden = true
         }
         
         // 通过分割线划分两个新的多边形

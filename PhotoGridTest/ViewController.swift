@@ -11,33 +11,101 @@ import SnapKit
 class ViewController: UIViewController {
     
     @IBAction func buttonTap(_ sender: Any) {
-        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
-        let image = renderer.image { ctx in
-            let b = view.drawHierarchy(in: view.bounds, afterScreenUpdates: false)
+        let renderer = UIGraphicsImageRenderer(size: redView.bounds.size)
+        let image = renderer.image { [weak self] ctx in
+            guard let view = self?.redView else {
+                return
+            }
+            let b = view.snapshotView.drawHierarchy(in: view.bounds, afterScreenUpdates: false)
             print("drawHierarchy", b)
         }
         print("image", image)
     }
     
-    var item: GridDivider!
+    var item: GridItem!
     var redView: PhotoGridView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let bounds = CGRect(origin: .zero, size: .init(width: 320, height: 320))
+        // line的方向会影响left和right的位置
+        // line的x1y1为下，x2y2为上，切出来的左右两份分别为left和right
+        let json: String = """
+{
+    "width": 320,
+    "height": 320,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 100,
+            "x2": 300,
+            "y2": 80
+        },
+        "offset": {
+            "dx": 30,
+            "dy": 30
+        },
+        "left": {
+            "type": "polygon",
+            "key": 0,
+            "controllableKeys": [
+                0
+            ]
+        },
+        "right": {
+            "type": "line",
+            "key": 1,
+            "line": {
+                "x2": 160,
+                "y2": 0,
+                "x1": 100,
+                "y1": 320
+            },
+            "left": {
+                "type": "polygon",
+                "key": 1,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            },
+            "right": {
+                "type": "line",
+                "key": 2,
+                "line": {
+                    "x1": 0,
+                    "y1": 200,
+                    "x2": 320,
+                    "y2": 230
+                },
+                "left": {
+                    "type": "polygon",
+                    "key": 2,
+                    "controllableKeys": [
+                        0,
+                        1,
+                        2
+                    ]
+                },
+                "right": {
+                    "type": "polygon",
+                    "key": 3,
+                    "controllableKeys": [
+                        1,
+                        2
+                    ]
+                }
+            }
+        }
+    }
+}
+"""
+        let dict = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!) as? [String: Any]
         
-        let line0 = GGLine(x1: 0, y1: bounds.size.height / 3, x2: bounds.size.width, y2: bounds.size.height / 4)
-        item = GridDivider(line: line0)
-        
-        let line1 = GGLine(x1: bounds.size.width / 3, y1: 0, x2: bounds.size.width / 3 - 40, y2: bounds.size.height).reverted()
-        item.left = GridDivider(line: line1)
-        //
-        let line2 = GGLine(x1: bounds.size.width / 3 + 40, y1: 0, x2: bounds.size.width / 3 + 40 + 40, y2: bounds.size.height).reverted()
-        item.right = GridDivider(line: line2)
-        
-        let line3 = GGLine(x1: 0 + 40, y1: bounds.size.height / 3 * 2, x2: bounds.size.width, y2: bounds.size.height / 3 * 1.5)
-        item.right.asDivider?.right = GridDivider(line: line3)
+        let obj = GridJson.create(fromJson: dict ?? [:])
+        item = obj.item
         
         print("hello world")
         
@@ -48,7 +116,8 @@ class ViewController: UIViewController {
         redView.snp.makeConstraints { make in
             make.centerX.equalTo(view)
             make.top.equalTo(view).offset(100)
-            make.width.height.equalTo(320)
+            make.width.equalTo(obj.width)
+            make.height.equalTo(obj.height)
         }
 //        redView.transform = .init(scaleX: 0.5, y: 0.5)
         
