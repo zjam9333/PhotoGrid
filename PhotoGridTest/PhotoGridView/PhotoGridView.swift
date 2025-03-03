@@ -9,7 +9,8 @@ import UIKit
 
 class PhotoGridView: UIView {
     
-    var borderWidth: CGFloat = 0;
+    var borderWidth: CGFloat = 0
+    var contentGetter: ((GridItem.Key) -> Any?)?
     
     private var cachePolyViews: [GridItem.Key: ImagePolygonView] = [:]
     private var cacheDragControl: [GridItem.Key: DragControl] = [:]
@@ -52,6 +53,14 @@ class PhotoGridView: UIView {
         ].sortClockwise()
         
         draw(polygon: poly, item: item, parentLine: nil)
+    }
+    
+    func refreshSubviewsContent() {
+        for item in cachePolyViews {
+            if let content = contentGetter?(item.key) as? UIImage {
+                item.value.imageView.image = content
+            }
+        }
     }
     
     private var randomColor = PresetColors()
@@ -174,44 +183,9 @@ fileprivate class ImagePolygonView: MaskPolygonView, UIImagePickerControllerDele
         imageView.snp.makeConstraints { make in
             make.edges.equalTo(0)
         }
-        
-        let tapG = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress(gesture:)))
-        addGestureRecognizer(tapG)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    @objc func onLongPress(gesture: UILongPressGestureRecognizer) {
-        guard gesture.state == .recognized else {
-            return
-        }
-        
-        print("onLongPress")
-        pickImage()
-    }
-    
-    private func pickImage() {
-        // 检查设备是否支持从相册选取图片
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            let imagePicker = UIImagePickerController()
-            imagePicker.sourceType = .photoLibrary
-            imagePicker.delegate = self
-            UIApplication.shared.keyWindow?.rootViewController?.present(imagePicker, animated: true)
-        }
-    }
-    
-    // 实现 UIImagePickerControllerDelegate 协议方法，处理用户选择图片的操作
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let selectedImage = info[.originalImage] as? UIImage {
-            imageView.image = selectedImage
-        }
-        picker.dismiss(animated: true, completion: nil)
-    }
-    
-    // 实现 UIImagePickerControllerDelegate 协议方法，处理用户取消选择的操作
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
     }
 }

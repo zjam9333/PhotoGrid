@@ -9,7 +9,7 @@ import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
     
-    private var redView: PhotoGridView!
+    var redView: PhotoGridView!
     
     var model: Model! {
         didSet {

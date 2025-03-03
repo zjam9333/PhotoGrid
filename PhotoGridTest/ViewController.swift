@@ -8,14 +8,18 @@
 import UIKit
 import SnapKit
 
-class ViewController: UIViewController, UICollectionViewDelegate {
+class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var collectionView: UICollectionView!
     
     var compositionalLayout: UICollectionViewCompositionalLayout!
     var diffDataSource: UICollectionViewDiffableDataSource<Int, CollectionViewCell.Model>!
     
+    var selectedImage: [UIImage] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewImages))
         
         self.navigationItem.title = "Grid List"
         
@@ -31,6 +35,19 @@ class ViewController: UIViewController, UICollectionViewDelegate {
         diffDataSource = .init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
             cell.model = itemIdentifier
+            cell.redView.contentGetter = { [weak self] key in
+                guard let self = self else {
+                    return nil
+                }
+                if self.selectedImage.indices.contains(key) == true {
+                    return self.selectedImage[key]
+                }
+                return nil
+            }
+            DispatchQueue.main.async {
+                // TODO: 这个时序有点问题，待优化
+                cell.redView.refreshSubviewsContent()
+            }
             return cell
         }
         
@@ -58,10 +75,33 @@ class ViewController: UIViewController, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let detail = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "griddetail") as! GridViewController
-        let model = diffDataSource.snapshot(for: indexPath.section).items[indexPath.item]
+        let model = diffDataSource.itemIdentifier(for: indexPath)!
         // 复制一份全新的
         detail.gridJson = GridJson.fromJson(model.gridJson.toJson())
         navigationController?.pushViewController(detail, animated: true)
+    }
+    
+    @objc func addNewImages() {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.delegate = self
+            present(imagePicker, animated: true)
+        }
+    }
+    
+    // 实现 UIImagePickerControllerDelegate 协议方法，处理用户选择图片的操作
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let img = info[.originalImage] as? UIImage {
+            selectedImage.append(img)
+            collectionView.reloadData()
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    // 实现 UIImagePickerControllerDelegate 协议方法，处理用户取消选择的操作
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 
