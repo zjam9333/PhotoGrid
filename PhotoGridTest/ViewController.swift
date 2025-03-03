@@ -8,43 +8,379 @@
 import UIKit
 import SnapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UICollectionViewDelegate {
+    var collectionView: UICollectionView!
     
-    @IBAction func exportJson(_ sender: Any?) {
-        let json = gridJson.toJson()
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys]) else {
-            return
-        }
-        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-            return
-        }
-        print("导出的json", jsonString)
-    }
-    
-    @IBAction func captureImage(_ sender: Any) {
-        let renderer = UIGraphicsImageRenderer(size: redView.bounds.size)
-        let image = renderer.image { [weak self] ctx in
-            guard let view = self?.redView else {
-                return
-            }
-            let b = view.snapshotView.drawHierarchy(in: view.bounds, afterScreenUpdates: false)
-            print("drawHierarchy", b)
-        }
-        print("image", image)
-    }
-    
-    var gridJson: GridJson!
-    var redView: PhotoGridView!
+    var compositionalLayout: UICollectionViewCompositionalLayout!
+    var diffDataSource: UICollectionViewDiffableDataSource<Int, CollectionViewCell.Model>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // line的方向会影响left和right的位置
-        // line的x1y1为下，x2y2为上，切出来的左右两份分别为left和right
-        let json: String = """
+        self.navigationItem.title = "Grid List"
+        
+        let item: NSCollectionLayoutItem = .init(layoutSize: .init(widthDimension: .fractionalHeight(1), heightDimension: .fractionalHeight(1)))
+        let group: NSCollectionLayoutGroup = .horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.3)), subitems: [item])
+        group.interItemSpacing = .fixed(10)
+        group.edgeSpacing = .init(leading: .fixed(10), top: .fixed(0), trailing: .fixed(0), bottom: .fixed(10))
+        compositionalLayout = UICollectionViewCompositionalLayout(section: .init(group: group))
+        
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
+        collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        
+        diffDataSource = .init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
+            cell.model = itemIdentifier
+            return cell
+        }
+        
+        collectionView.dataSource = diffDataSource
+        collectionView.delegate = self
+        
+        view.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalTo(0)
+        }
+        
+        var snap = diffDataSource.snapshot()
+        snap.appendSections([0])
+        snap.appendItems([
+            .init(originalJson: json0),
+            .init(originalJson: json1),
+            .init(originalJson: json2),
+            .init(originalJson: json3),
+            .init(originalJson: json4),
+            .init(originalJson: json),
+            .init(originalJson: json),
+        ])
+        diffDataSource.apply(snap)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detail = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "griddetail") as! GridViewController
+        let model = diffDataSource.snapshot(for: indexPath.section).items[indexPath.item]
+        // 复制一份全新的
+        detail.gridJson = GridJson.fromJson(model.gridJson.toJson())
+        navigationController?.pushViewController(detail, animated: true)
+    }
+}
+
+let json0: String = """
 {
-    "width": 320,
-    "height": 320,
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 150,
+            "x2": 300,
+            "y2": 150
+        },
+        "offset": {
+            "dx": 0,
+            "dy": 0
+        },
+        "left": {
+            "type": "polygon",
+            "key": 0,
+            "controllableKeys": [
+                0
+            ]
+        },
+        "right": {
+            "type": "polygon",
+            "key": 1,
+            "controllableKeys": [
+                0
+            ]
+        }
+    }
+}
+"""
+
+let json1: String = """
+{
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 150,
+            "x2": 300,
+            "y2": 150
+        },
+        "offset": {
+            "dx": 0,
+            "dy": 0
+        },
+        "left": {
+            "type": "polygon",
+            "key": 0,
+            "controllableKeys": [
+                0
+            ]
+        },
+        "right": {
+            "type": "line",
+            "key": 1,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 150,
+                "y2": 300
+            },
+            "offset": {
+                "dx": 0,
+                "dy": 0
+            },
+            "left": {
+                "type": "polygon",
+                "key": 1,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 2,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            }
+        }
+    }
+}
+"""
+
+let json2: String = """
+{
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 100,
+            "x2": 300,
+            "y2": 100
+        },
+        "offset": {
+            "dx": 0,
+            "dy": 0
+        },
+        "left": {
+            "type": "polygon",
+            "key": 0,
+            "controllableKeys": [
+                0
+            ]
+        },
+        "right": {
+            "type": "line",
+            "key": 1,
+            "line": {
+                "x1": 0,
+                "y1": 200,
+                "x2": 300,
+                "y2": 200
+            },
+            "offset": {
+                "dx": 0,
+                "dy": 0
+            },
+            "left": {
+                "type": "polygon",
+                "key": 1,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 2,
+                "controllableKeys": [
+                    1
+                ]
+            }
+        }
+    }
+}
+"""
+
+let json3: String = """
+{
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 150,
+            "x2": 300,
+            "y2": 150
+        },
+        "offset": {
+            "dx": 0,
+            "dy": 0
+        },
+        "left": {
+            "type": "line",
+            "key": 1,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 150,
+                "y2": 300
+            },
+            "offset": {
+                "dx": 0,
+                "dy": 0
+            },
+            "left": {
+                "type": "polygon",
+                "key": 0,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 1,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            }
+        },
+        "right": {
+            "type": "line",
+            "key": 2,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 150,
+                "y2": 300
+            },
+            "offset": {
+                "dx": 0,
+                "dy": 0
+            },
+            "left": {
+                "type": "polygon",
+                "key": 2,
+                "controllableKeys": [
+                    2,
+                    0
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 3,
+                "controllableKeys": [
+                    2,
+                    0
+                ]
+            }
+        }
+    }
+}
+"""
+
+let json4: String = """
+{
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 150,
+            "x2": 300,
+            "y2": 150
+        },
+        "offset": {
+            "dx": 0,
+            "dy": 0
+        },
+        "left": {
+            "type": "line",
+            "key": 1,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 150,
+                "y2": 300
+            },
+            "offset": {
+                "dx": 50,
+                "dy": 0
+            },
+            "left": {
+                "type": "polygon",
+                "key": 0,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 1,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            }
+        },
+        "right": {
+            "type": "line",
+            "key": 2,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 150,
+                "y2": 300
+            },
+            "offset": {
+                "dx": -50,
+                "dy": 0
+            },
+            "left": {
+                "type": "polygon",
+                "key": 2,
+                "controllableKeys": [
+                    2,
+                    0
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 3,
+                "controllableKeys": [
+                    2,
+                    0
+                ]
+            }
+        }
+    }
+}
+"""
+
+let json: String = """
+{
+    "width": 300,
+    "height": 300,
     "item": {
         "type": "line",
         "key": 0,
@@ -72,7 +408,7 @@ class ViewController: UIViewController {
                 "x2": 160,
                 "y2": 0,
                 "x1": 100,
-                "y1": 320
+                "y1": 300
             },
             "left": {
                 "type": "polygon",
@@ -88,7 +424,7 @@ class ViewController: UIViewController {
                 "line": {
                     "x1": 0,
                     "y1": 200,
-                    "x2": 320,
+                    "x2": 300,
                     "y2": 230
                 },
                 "left": {
@@ -113,32 +449,3 @@ class ViewController: UIViewController {
     }
 }
 """
-        let dict = try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!) as? [String: Any]
-        
-        gridJson = GridJson.fromJson(dict ?? [:])
-        
-        print("hello world")
-        
-        redView = PhotoGridView(item: gridJson.item)
-        redView.borderWidth = 5
-        view.addSubview(redView)
-        
-        redView.snp.makeConstraints { make in
-            make.centerX.equalTo(view)
-            make.top.equalTo(view).offset(100)
-            make.width.equalTo(gridJson.width)
-            make.height.equalTo(gridJson.height)
-        }
-//        redView.transform = .init(scaleX: 0.5, y: 0.5)
-        
-        DispatchQueue.main.async { [self] in
-            redView.refreshSubviewsFrame()
-        }
-    }
-    
-    @IBAction func stepperValueChanged(_ sender: UIStepper) {
-        redView.borderWidth = sender.value
-        redView.refreshSubviewsFrame()
-    }
-}
-
