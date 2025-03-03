@@ -83,12 +83,14 @@ class GridDivider: GridItem {
     var left: GridItem
     var right: GridItem
     var offset: CGVector
+    let syncGroup: [Key]
     
-    init(key: Key, line: GGLine, left: GridItem = .random(), right: GridItem = .random(), offset: CGVector = .zero) {
+    init(key: Key, line: GGLine, left: GridItem = .random(), right: GridItem = .random(), offset: CGVector = .zero, syncGroup: [Key] = []) {
         self.line = line
         self.left = left
         self.right = right
         self.offset = offset
+        self.syncGroup = syncGroup
         super.init(key: key)
     }
     
@@ -105,10 +107,12 @@ class GridDivider: GridItem {
         let dx = offset?["dx"] as? CGFloat ?? 0
         let dy = offset?["dy"] as? CGFloat ?? 0
         
+        let syncGroup = json["syncGroup"] as? [Key] ?? []
+        
         let left = GridItem.fromJson(json["left"] as? [String: Any] ?? [:])
         let right = GridItem.fromJson(json["right"] as? [String: Any] ?? [:])
         
-        return GridDivider(key: key, line: .init(x1: x1, y1: y1, x2: x2, y2: y2), left: left, right: right, offset: .init(dx: dx, dy: dy))
+        return GridDivider(key: key, line: .init(x1: x1, y1: y1, x2: x2, y2: y2), left: left, right: right, offset: .init(dx: dx, dy: dy), syncGroup: syncGroup)
     }
     
     override func toJson() -> [String : Any] {
@@ -127,6 +131,7 @@ class GridDivider: GridItem {
             ],
             "left": left.toJson(),
             "right": right.toJson(),
+            "syncGroup": syncGroup,
         ]
     }
 }

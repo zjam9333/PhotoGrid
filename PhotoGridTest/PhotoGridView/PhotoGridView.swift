@@ -118,6 +118,20 @@ class PhotoGridView: UIView {
                 let center = item.line.center
                 let newOffset = CGVector(dx: pointInSelf.x - center.x, dy: pointInSelf.y - center.y)
                 item.offset = newOffset
+                
+                let syncGroup = Set(item.syncGroup)
+                func findAndSync(item: GridItem?) {
+                    guard let item = item as? GridDivider else {
+                        return
+                    }
+                    if syncGroup.contains(item.key) {
+                        item.offset = newOffset
+                    }
+                    findAndSync(item: item.left)
+                    findAndSync(item: item.right)
+                }
+                findAndSync(item: self?.item)
+                
                 self?.refreshSubviewsFrame()
             }
             dragView.transform = .init(rotationAngle: atan2(line.p1.x - line.p2.x, line.p2.y - line.p1.y) + .pi / 2)

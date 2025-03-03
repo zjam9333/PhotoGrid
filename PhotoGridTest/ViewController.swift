@@ -245,6 +245,10 @@ let json3: String = """
                 "dx": 0,
                 "dy": 0
             },
+            "syncGroup": [
+                1,
+                2
+            ],
             "left": {
                 "type": "polygon",
                 "key": 0,
@@ -275,6 +279,10 @@ let json3: String = """
                 "dx": 0,
                 "dy": 0
             },
+            "syncGroup": [
+                1,
+                2
+            ],
             "left": {
                 "type": "polygon",
                 "key": 2,
