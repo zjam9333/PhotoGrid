@@ -189,7 +189,7 @@ class PhotoGridView: UIView {
     }
 }
 
-fileprivate class ImagePolygonView: MaskPolygonView, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+fileprivate class ImagePolygonView: MaskPolygonView {
     let imageView = UIImageView()
     
     override init(frame: CGRect) {

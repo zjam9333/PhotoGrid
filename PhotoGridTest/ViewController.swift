@@ -7,8 +7,9 @@
 
 import UIKit
 import SnapKit
+import PhotosUI
 
-class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController {
     var collectionView: UICollectionView!
     
     var compositionalLayout: UICollectionViewCompositionalLayout!
@@ -84,14 +85,56 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
     }
     
     @objc func addNewImages() {
+        pickImageUsePHPicker()
+    }
+    private func pickImageUsePHPicker() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 4
+        configuration.filter = .images // 仅允许选择图片
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
+    }
+    private func pickImageUseImagePickController() {
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             let imagePicker = UIImagePickerController()
+            
             imagePicker.sourceType = .photoLibrary
             imagePicker.delegate = self
             present(imagePicker, animated: true)
         }
     }
-    
+}
+extension ViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        var idx = 0
+        var total = results.count
+        for result in results {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
+                guard let this = self else { return }
+                if let error = error {
+                    total -= 1
+                    print("加载图片出错: \(error.localizedDescription)")
+                    return
+                }
+                if let image = image as? UIImage {
+                    idx += 1
+                    this.selectedImages.append(image)
+                    print(idx, total)
+                    if idx == total {
+                        DispatchQueue.main.async {
+                            this.collectionView.reloadData()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension ViewController: UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // 实现 UIImagePickerControllerDelegate 协议方法，处理用户选择图片的操作
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let img = info[.originalImage] as? UIImage {

@@ -6,18 +6,36 @@
 //
 
 import UIKit
+import QuickLook
 
 class GridViewController: UIViewController {
     
     @IBAction func exportJson(_ sender: Any?) {
         let json = gridJson.toJson()
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys]) else {
-            return
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys])
+            guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+                return
+            }
+            print("导出的json", jsonString)
+            let filePath = NSTemporaryDirectory() + "layout.json"
+            let fileURL = URL(fileURLWithPath: filePath)
+            try jsonData.write(to: fileURL, options: .atomic)
+            self.jsonURL = fileURL
+            let previewVC = QLPreviewController()
+            previewVC.dataSource = self
+            present(previewVC, animated: true)
+//            let avc = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+//            avc.excludedActivityTypes = []
+//            avc.completionWithItemsHandler = { [unowned avc] type, completed, returnedItems, error in
+//                avc.dismiss(animated: true) {
+//                    print("[dismiss activity]", type ?? "nil", error ?? "nil")
+//                }
+//            }
+//            present(avc, animated: true, completion: nil)
+        } catch {
+            print("some error \(error)")
         }
-        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-            return
-        }
-        print("导出的json", jsonString)
     }
     
     @IBAction func captureImage(_ sender: Any) {
@@ -32,6 +50,7 @@ class GridViewController: UIViewController {
         print("image", image)
     }
     
+    private var jsonURL: URL!
     private var redView: PhotoGridView!
     var gridJson: GridJson!
     var selectedImages: [UIImage] = []
@@ -67,5 +86,13 @@ class GridViewController: UIViewController {
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
         redView.borderWidth = sender.value
         redView.refreshSubviewsFrame()
+    }
+}
+extension GridViewController: QLPreviewControllerDataSource {
+    func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+        1
+    }
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> any QLPreviewItem {
+        jsonURL as QLPreviewItem
     }
 }
