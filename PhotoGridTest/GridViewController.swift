@@ -34,14 +34,15 @@ class GridViewController: UIViewController {
     
     private var redView: PhotoGridView!
     var gridJson: GridJson!
+    var selectedImages: [UIImage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationItem.title = "Grid Detail"
         
-        redView = PhotoGridView(item: gridJson.item)
-//        redView.borderWidth = 5
+        redView = PhotoGridView(json: gridJson)
+        redView.borderWidth = 5
         view.addSubview(redView)
         
         redView.snp.makeConstraints { make in
@@ -50,10 +51,16 @@ class GridViewController: UIViewController {
             make.width.equalTo(gridJson.width)
             make.height.equalTo(gridJson.height)
         }
-        //        redView.transform = .init(scaleX: 0.5, y: 0.5)
+        redView.contentGetter = { [weak self] key in
+            if self?.selectedImages.indices.contains(key) == true {
+                return self?.selectedImages[key]
+            }
+            return nil
+        }
         
         DispatchQueue.main.async { [self] in
             redView.refreshSubviewsFrame()
+            redView.refreshSubviewsContent()
         }
     }
     

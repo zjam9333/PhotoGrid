@@ -20,14 +20,28 @@ class PhotoGridView: UIView {
     
     private var currentOverlayItem: GridItem? = nil
     
-    var item: GridItem
+    private var json: GridJson
+    private var randomColor = PresetColors()
     
-    init(item: GridItem) {
-        self.item = item
+    func updateGrid(json: GridJson) {
+        self.json = json
+        randomColor = PresetColors()
+        cachePolyViews.removeAll()
+        cacheDragControl.removeAll()
+        contentView.subviews.forEach { v in
+            v.removeFromSuperview()
+        }
+        currentOverlayItem = nil
+    }
+    
+    init(json: GridJson) {
+        self.json = json
         super.init(frame: .zero)
+        updateGrid(json: json)
         addSubview(contentView)
         addSubview(overlayView)
         overlayView.isUserInteractionEnabled = false
+        backgroundColor = .black
     }
     
     var snapshotView: UIView {
@@ -45,14 +59,18 @@ class PhotoGridView: UIView {
     }
     
     func refreshSubviewsFrame() {
+        var rect = bounds
+        if borderWidth > 0 {
+            rect = rect.insetBy(dx: borderWidth / 2, dy: borderWidth / 2)
+        }
         let poly = [
-            bounds.topLeft,
-            bounds.bottomLeft,
-            bounds.topRight,
-            bounds.bottomRight,
+            rect.topLeft,
+            rect.bottomLeft,
+            rect.topRight,
+            rect.bottomRight,
         ].sortClockwise()
         
-        draw(polygon: poly, item: item, parentLine: nil)
+        draw(polygon: poly, item: json.item, parentLine: nil)
     }
     
     func refreshSubviewsContent() {
@@ -62,8 +80,6 @@ class PhotoGridView: UIView {
             }
         }
     }
-    
-    private var randomColor = PresetColors()
     
     private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
         guard let item = item as? GridDivider else {
@@ -78,7 +94,7 @@ class PhotoGridView: UIView {
             let notEnough = polygon.count < 3 // 至少要3角形
             poly.isHidden = notEnough
             
-            poly.setPolygon(points: polygon, borderWidth: borderWidth)
+            poly.setPolygon(points: polygon, borderWidth: borderWidth / 2)
             let controllableKeys: [Int] = (item as? GridPolygon)?.controllableKeys ?? []
             poly.onTap = { [weak self, weak item] in
                 self?.cacheDragControl.values.forEach { drag in
@@ -139,7 +155,7 @@ class PhotoGridView: UIView {
                     findAndSync(item: item.left)
                     findAndSync(item: item.right)
                 }
-                findAndSync(item: self?.item)
+                findAndSync(item: self?.json.item)
                 
                 self?.refreshSubviewsFrame()
             }

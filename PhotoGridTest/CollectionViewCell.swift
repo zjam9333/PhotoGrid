@@ -13,15 +13,15 @@ class CollectionViewCell: UICollectionViewCell {
     
     var model: Model! {
         didSet {
-            redView.item = model.gridJson.item
+            redView.updateGrid(json: model.gridJson)
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        redView = PhotoGridView(item: .random())
+        redView = PhotoGridView(json: .init(width: 320, height: 320, item: .random()))
         redView.frame = CGRect(origin: .zero, size: .init(width: 320, height: 320))
-//        redView.borderWidth = 5
+        redView.borderWidth = 5
         redView.isUserInteractionEnabled = false
         contentView.addSubview(redView)
     }

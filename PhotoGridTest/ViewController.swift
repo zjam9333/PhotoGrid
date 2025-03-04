@@ -14,7 +14,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
     var compositionalLayout: UICollectionViewCompositionalLayout!
     var diffDataSource: UICollectionViewDiffableDataSource<Int, CollectionViewCell.Model>!
     
-    var selectedImage: [UIImage] = []
+    var selectedImages: [UIImage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
         let group: NSCollectionLayoutGroup = .horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.3)), subitems: [item])
         group.interItemSpacing = .fixed(10)
         group.edgeSpacing = .init(leading: .fixed(10), top: .fixed(0), trailing: .fixed(0), bottom: .fixed(10))
-        compositionalLayout = UICollectionViewCompositionalLayout(section: .init(group: group))
+        let section: NSCollectionLayoutSection = .init(group: group)
+        section.contentInsets = .init(top: 10, leading: 0, bottom: 0, trailing: 0)
+        
+        compositionalLayout = UICollectionViewCompositionalLayout(section: section)
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: "cell")
@@ -36,11 +39,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
             cell.model = itemIdentifier
             cell.redView.contentGetter = { [weak self] key in
-                guard let self = self else {
-                    return nil
-                }
-                if self.selectedImage.indices.contains(key) == true {
-                    return self.selectedImage[key]
+                if self?.selectedImages.indices.contains(key) == true {
+                    return self?.selectedImages[key]
                 }
                 return nil
             }
@@ -62,6 +62,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
         var snap = diffDataSource.snapshot()
         snap.appendSections([0])
         snap.appendItems([
+            .init(originalJson: jsonOnlyOne),
             .init(originalJson: json0),
             .init(originalJson: json1),
             .init(originalJson: json2),
@@ -78,6 +79,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
         let model = diffDataSource.itemIdentifier(for: indexPath)!
         // 复制一份全新的
         detail.gridJson = GridJson.fromJson(model.gridJson.toJson())
+        detail.selectedImages = selectedImages
         navigationController?.pushViewController(detail, animated: true)
     }
     
@@ -93,7 +95,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
     // 实现 UIImagePickerControllerDelegate 协议方法，处理用户选择图片的操作
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let img = info[.originalImage] as? UIImage {
-            selectedImage.append(img)
+            selectedImages.append(img)
             collectionView.reloadData()
         }
         picker.dismiss(animated: true, completion: nil)
@@ -104,6 +106,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UIImagePickerC
         picker.dismiss(animated: true, completion: nil)
     }
 }
+
+let jsonOnlyOne: String = """
+{
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "polygon",
+        "key": 0
+    }
+}
+"""
 
 let json0: String = """
 {
