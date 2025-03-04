@@ -48,10 +48,12 @@ class GridViewController: UIViewController {
             print("drawHierarchy", b)
         }
         print("image", image)
+        snapshowImageView.image = image
     }
     
     private var jsonURL: URL!
     private var redView: PhotoGridView!
+    private var snapshowImageView: UIImageView!
     var gridJson: GridJson!
     var selectedImages: [UIImage] = []
     
@@ -66,7 +68,7 @@ class GridViewController: UIViewController {
         
         redView.snp.makeConstraints { make in
             make.centerX.equalTo(view)
-            make.top.equalTo(view).offset(100)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(100)
             make.width.equalTo(gridJson.width)
             make.height.equalTo(gridJson.height)
         }
@@ -81,10 +83,18 @@ class GridViewController: UIViewController {
             redView.refreshSubviewsFrame()
             redView.refreshSubviewsContent()
         }
+        
+        snapshowImageView = UIImageView()
+        view.addSubview(snapshowImageView)
+        snapshowImageView.snp.makeConstraints { make in
+            make.bottom.equalTo(-20)
+            make.left.equalTo(20)
+            make.width.height.equalTo(100)
+        }
     }
     
-    @IBAction func stepperValueChanged(_ sender: UIStepper) {
-        redView.borderWidth = sender.value
+    @IBAction func stepperValueChanged(_ sender: UISlider) {
+        redView.borderWidth = CGFloat(sender.value)
         redView.refreshSubviewsFrame()
     }
 }

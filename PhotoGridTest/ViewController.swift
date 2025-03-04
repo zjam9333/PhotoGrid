@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewImages))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(deleteImages))
         
         self.navigationItem.title = "Grid List"
         
@@ -87,6 +88,12 @@ class ViewController: UIViewController {
     @objc func addNewImages() {
         pickImageUsePHPicker()
     }
+    
+    @objc func deleteImages() {
+        selectedImages.removeAll()
+        collectionView.reloadData()
+    }
+    
     private func pickImageUsePHPicker() {
         var configuration = PHPickerConfiguration()
         configuration.selectionLimit = 4
@@ -111,8 +118,13 @@ extension ViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true, completion: nil)
         var idx = 0
         var total = results.count
+        let group = DispatchGroup()
         for result in results {
+            group.enter()
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
+                defer {
+                    group.leave()
+                }
                 guard let this = self else { return }
                 if let error = error {
                     total -= 1
@@ -123,13 +135,11 @@ extension ViewController: PHPickerViewControllerDelegate {
                     idx += 1
                     this.selectedImages.append(image)
                     print(idx, total)
-                    if idx == total {
-                        DispatchQueue.main.async {
-                            this.collectionView.reloadData()
-                        }
-                    }
                 }
             }
+        }
+        group.notify(queue: .main) { [weak self] in
+            self?.collectionView.reloadData()
         }
     }
 }

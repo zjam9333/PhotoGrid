@@ -83,8 +83,11 @@ extension Array where Element == CGPoint {
         }
         return res
     }
-    
-    func shrinkPolygon(_ polygon: [CGPoint], by distance: CGFloat) -> [CGPoint] {
+}
+
+struct ShrinkPolygon {
+    /// 这个老方法直接用向量平移，简单很多，但是生成的新边与旧边不平行，会产生轻微的旋转
+    static private func shrinkPolygon2(_ polygon: [CGPoint], by distance: CGFloat) -> [CGPoint] {
         var shrunkPoints: [CGPoint] = []
         let count = polygon.count
         
@@ -113,6 +116,31 @@ extension Array where Element == CGPoint {
             let newPoint = CGPoint(x: newX, y: newY)
             
             shrunkPoints.append(newPoint)
+        }
+        
+        return shrunkPoints
+    }
+    
+    static func shrinkPolygon(_ polygon: [CGPoint], by distance: CGFloat) -> [CGPoint] {
+        var newLines: [GGLine] = []
+        let count = polygon.count
+        for i in 0..<count {
+            let p0 = polygon[i]
+            let p1 = polygon[(i + 1) % count]
+            let oldLine = GGLine(p1: p0, p2: p1)
+            let shiftLine = oldLine.shiftLine(byDistance: distance)
+            newLines.append(shiftLine)
+        }
+        var shrunkPoints: [CGPoint] = []
+        
+        for i in 0..<count {
+            let prevIndex = (i - 1 + count) % count
+            let l0 = newLines[prevIndex]
+            let l1 = newLines[i]
+            let newPoint = l0.intersection(other: l1)
+            if let newPoint = newPoint {
+                shrunkPoints.append(newPoint)
+            }
         }
         
         return shrunkPoints
@@ -319,5 +347,20 @@ struct GGLine {
     
     var center: CGPoint {
         return CGPoint(x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2)
+    }
+    
+    func shiftLine(byDistance distance: CGFloat) -> GGLine {
+        // 计算直线的方向向量
+        let directionVector = CGPoint(x: p2.x - p1.x, y: p2.y - p1.y)
+        // 法向量
+        let normalVector = CGPoint(x: -directionVector.y, y: directionVector.x)
+        // 归一化法向量
+        let normalizedNormal = normalVector.normalized()
+        
+        // 计算平移后的点
+        let translatedP1 = CGPoint(x: p1.x + distance * normalizedNormal.x, y: p1.y + distance * normalizedNormal.y)
+        let translatedP2 = CGPoint(x: p2.x + distance * normalizedNormal.x, y: p2.y + distance * normalizedNormal.y)
+        
+        return GGLine(p1: translatedP1, p2: translatedP2)
     }
 }

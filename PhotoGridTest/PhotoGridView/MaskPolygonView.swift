@@ -8,6 +8,7 @@
 import UIKit
 
 class MaskPolygonView: UIView {
+    let contentView = UIView()
     private var maskPolyPoints: [CGPoint] = []
     
     private let maskLayer = CAShapeLayer()
@@ -17,6 +18,7 @@ class MaskPolygonView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.mask = maskLayer
+        addSubview(contentView)
         
         let tapG = UITapGestureRecognizer(target: self, action: #selector(onTapGesture))
         addGestureRecognizer(tapG)
@@ -45,7 +47,7 @@ class MaskPolygonView: UIView {
         var usingPoints = maskPolyPoints
         if borderWidth > 0 {
             // TODO: 需解决直线相交问题
-            usingPoints = usingPoints.shrinkPolygon(usingPoints, by: borderWidth)
+            usingPoints = ShrinkPolygon.shrinkPolygon(usingPoints, by: borderWidth)
         }
         
         let path = UIBezierPath()
@@ -59,6 +61,8 @@ class MaskPolygonView: UIView {
         path.close()
         maskLayer.path = path.cgPath
         maskLayer.fillRule = .nonZero
+        
+        contentView.frame = CGRect(top: usingPoints.top ?? 0, left: usingPoints.left ?? 0, bottom: usingPoints.bottom ?? 0, right: usingPoints.right ?? 0).insetBy(dx: -1, dy: -1)
     }
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

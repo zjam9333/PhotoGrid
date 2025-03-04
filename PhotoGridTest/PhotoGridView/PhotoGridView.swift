@@ -26,22 +26,46 @@ class PhotoGridView: UIView {
     func updateGrid(json: GridJson) {
         self.json = json
         randomColor = PresetColors()
-        cachePolyViews.removeAll()
-        cacheDragControl.removeAll()
-        contentView.subviews.forEach { v in
+        cachePolyViews.values.forEach { v in
             v.removeFromSuperview()
         }
+        cacheDragControl.values.forEach { v in
+            v.removeFromSuperview()
+        }
+        overlayView.overlayPolygon = []
+        cachePolyViews.removeAll()
+        cacheDragControl.removeAll()
         currentOverlayItem = nil
+        
+        func cacheItem(_ item: GridItem) {
+            if let item = item as? GridPolygon {
+                let poly = ImagePolygonView()
+                poly.backgroundColor = randomColor.next()
+                contentView.insertSubview(poly, at: 0)
+                cachePolyViews[item.key] = poly
+            } else if let item = item as? GridDivider {
+                let dragView = DragControl()
+                dragView.frame = CGRect(origin: .zero, size: .init(width: 30, height: 30))
+                dragView.layer.cornerRadius = 15
+                dragView.backgroundColor = .gray
+                dragView.isHidden = true
+                addSubview(dragView)
+                cacheDragControl[item.key] = dragView
+                cacheItem(item.left)
+                cacheItem(item.right)
+            }
+        }
+        cacheItem(json.item)
     }
     
     init(json: GridJson) {
         self.json = json
         super.init(frame: .zero)
-        updateGrid(json: json)
         addSubview(contentView)
         addSubview(overlayView)
+        updateGrid(json: json)
         overlayView.isUserInteractionEnabled = false
-        backgroundColor = .black
+        contentView.backgroundColor = .black
     }
     
     var snapshotView: UIView {
@@ -77,25 +101,26 @@ class PhotoGridView: UIView {
         for item in cachePolyViews {
             if let content = contentGetter?(item.key) as? UIImage {
                 item.value.imageView.image = content
+            } else {
+                item.value.imageView.image = nil
             }
         }
     }
     
     private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
         guard let item = item as? GridDivider else {
-            let poly: ImagePolygonView = cachePolyViews[item.key] ?? {
-                let polyView = ImagePolygonView()
-                contentView.insertSubview(polyView, at: 0)
-                polyView.backgroundColor = randomColor.next()
-                cachePolyViews[item.key] = polyView
-                return polyView
-            }()
+            guard let item = item as? GridPolygon else {
+                return
+            }
+            guard let poly: ImagePolygonView = cachePolyViews[item.key] else {
+                return
+            }
             
             let notEnough = polygon.count < 3 // 至少要3角形
             poly.isHidden = notEnough
             
             poly.setPolygon(points: polygon, borderWidth: borderWidth / 2)
-            let controllableKeys: [Int] = (item as? GridPolygon)?.controllableKeys ?? []
+            let controllableKeys: [Int] = item.controllableKeys
             poly.onTap = { [weak self, weak item] in
                 self?.cacheDragControl.values.forEach { drag in
                     drag.isHidden = true
@@ -132,12 +157,7 @@ class PhotoGridView: UIView {
             return nil
         }
         
-        let drag: DragControl = cacheDragControl[item.key] ?? {
-            let dragView = DragControl()
-            addSubview(dragView)
-            dragView.backgroundColor = .gray
-            dragView.frame = CGRect(origin: line.center, size: .init(width: 30, height: 30))
-            dragView.layer.cornerRadius = 15
+        if let dragView: DragControl = cacheDragControl[item.key] {
             dragView.onDrag = { [weak self] touch in
                 let pointInSelf = touch.location(in: self)
                 let center = item.line.center
@@ -160,15 +180,12 @@ class PhotoGridView: UIView {
                 self?.refreshSubviewsFrame()
             }
             dragView.transform = .init(rotationAngle: atan2(line.p1.x - line.p2.x, line.p2.y - line.p1.y) + .pi / 2)
-            cacheDragControl[item.key] = dragView
-            dragView.isHidden = true
-            return dragView
-        }()
-        if intersects.count >= 2 {
-            drag.center = GGLine(p1: intersects[0], p2: intersects[1]).center
-//            drag.isHidden = false
-        } else {
-//            drag.isHidden = true
+            if intersects.count >= 2 {
+                dragView.center = GGLine(p1: intersects[0], p2: intersects[1]).center
+                //            drag.isHidden = false
+            } else {
+                //            drag.isHidden = true
+            }
         }
         
         // 通过分割线划分两个新的多边形
@@ -194,7 +211,7 @@ fileprivate class ImagePolygonView: MaskPolygonView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(imageView)
+        contentView.addSubview(imageView)
         imageView.contentMode = .scaleAspectFill
         imageView.snp.makeConstraints { make in
             make.edges.equalTo(0)

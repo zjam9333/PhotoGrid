@@ -33,10 +33,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ayA-Jx-Uzs">
-                                <rect key="frame" x="110.00000000000001" y="613.33333333333337" width="173.33333333333337" height="140.66666666666663"/>
+                                <rect key="frame" x="97.666666666666671" y="615.33333333333337" width="197.66666666666663" height="138.66666666666663"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMD-1H-ioe">
-                                        <rect key="frame" x="44.333333333333343" y="0.0" width="129" height="34.333333333333336"/>
+                                        <rect key="frame" x="70.666666666666686" y="0.0" width="127" height="34.333333333333336"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="导出json看看"/>
                                         <connections>
@@ -44,24 +44,27 @@
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="2xh-t2-plo">
-                                        <rect key="frame" x="0.0" y="54.333333333333258" width="173.33333333333334" height="32"/>
+                                        <rect key="frame" x="0.0" y="54.333333333333258" width="197.66666666666666" height="30"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="描边粗细" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h9w-V9-XEb">
-                                                <rect key="frame" x="0.0" y="0.0" width="69.333333333333329" height="32"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="67.666666666666671" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="4" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="aoF-ds-6ab">
-                                                <rect key="frame" x="79.333333333333343" y="0.0" width="94" height="32"/>
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="0.0" maxValue="60" translatesAutoresizingMaskIntoConstraints="NO" id="lZM-hS-hBC">
+                                                <rect key="frame" x="75.666666666666686" y="0.0" width="124" height="31"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="120" id="8He-nf-kT0"/>
+                                                </constraints>
                                                 <connections>
-                                                    <action selector="stepperValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="nNY-yL-1Fi"/>
+                                                    <action selector="stepperValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="4LA-qk-Mx8"/>
                                                 </connections>
-                                            </stepper>
+                                            </slider>
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3lG-zL-xxA">
-                                        <rect key="frame" x="28" y="106.33333333333326" width="145.33333333333334" height="34.333333333333343"/>
+                                        <rect key="frame" x="55.666666666666671" y="104.33333333333326" width="142" height="34.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="截图打断点看看"/>
                                         <connections>
