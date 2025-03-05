@@ -18,7 +18,6 @@
 		1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95042D5F2EAA00130FBB /* PresetColors.swift */; };
 		1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */; };
 		1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95082D5F501B00130FBB /* GridItem.swift */; };
-		1C5C21EC2D77FB7E00E29785 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C21EB2D77FB7E00E29785 /* Main.storyboard */; };
 		1C5C21EE2D77FBAD00E29785 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C21ED2D77FBAD00E29785 /* SceneDelegate.swift */; };
 		1CD622E92D704510006F0B25 /* DragControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD622E82D704510006F0B25 /* DragControl.swift */; };
 		1CD622EB2D7598E5006F0B25 /* GridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD622EA2D7598E5006F0B25 /* GridViewController.swift */; };
@@ -39,7 +38,6 @@
 		1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeOverlayView.swift; sourceTree = "<group>"; };
 		1C2D95082D5F501B00130FBB /* GridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridItem.swift; sourceTree = "<group>"; };
 		1C2D950B2D5F56ED00130FBB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1C5C21EB2D77FB7E00E29785 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		1C5C21ED2D77FBAD00E29785 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1CD622E82D704510006F0B25 /* DragControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragControl.swift; sourceTree = "<group>"; };
 		1CD622EA2D7598E5006F0B25 /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
@@ -86,7 +84,6 @@
 				1C2D94EA2D5DC78B00130FBB /* GridListController.swift */,
 				1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */,
 				1CD622EA2D7598E5006F0B25 /* GridViewController.swift */,
-				1C5C21EB2D77FB7E00E29785 /* Main.storyboard */,
 				1C2D94EF2D5DC78C00130FBB /* Assets.xcassets */,
 				1C2D94F12D5DC78C00130FBB /* LaunchScreen.storyboard */,
 				1C2D94F42D5DC78C00130FBB /* Info.plist */,
@@ -172,7 +169,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C5C21EC2D77FB7E00E29785 /* Main.storyboard in Resources */,
 				1C2D94F02D5DC78C00130FBB /* Assets.xcassets in Resources */,
 				1C2D94F32D5DC78C00130FBB /* Base in Resources */,
 			);
@@ -345,7 +341,6 @@
 				INFOPLIST_FILE = PhotoGridTest/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -378,7 +373,6 @@
 				INFOPLIST_FILE = PhotoGridTest/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
