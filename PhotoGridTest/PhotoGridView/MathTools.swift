@@ -223,16 +223,16 @@ extension CGPoint {
             return true
         }
         // 差了0.几的误差
-        if CGPoint(x: p.x + 1, y: p.y).liesInside(polygon: polygon) {
+        if CGPoint(x: p.x + 0.1, y: p.y).liesInside(polygon: polygon) {
             return true
         }
-        if CGPoint(x: p.x - 1, y: p.y).liesInside(polygon: polygon) {
+        if CGPoint(x: p.x - 0.1, y: p.y).liesInside(polygon: polygon) {
             return true
         }
-        if CGPoint(x: p.x, y: p.y + 1).liesInside(polygon: polygon) {
+        if CGPoint(x: p.x, y: p.y + 0.1).liesInside(polygon: polygon) {
             return true
         }
-        if CGPoint(x: p.x, y: p.y - 1).liesInside(polygon: polygon) {
+        if CGPoint(x: p.x, y: p.y - 0.1).liesInside(polygon: polygon) {
             return true
         }
         return false

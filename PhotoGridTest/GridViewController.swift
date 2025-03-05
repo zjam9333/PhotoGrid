@@ -24,7 +24,7 @@ class GridViewController: UIViewController {
             self.jsonURL = fileURL
             let previewVC = QLPreviewController()
             previewVC.dataSource = self
-            present(previewVC, animated: true)
+            navigationController?.pushViewController(previewVC, animated: true)
 //            let avc = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
 //            avc.excludedActivityTypes = []
 //            avc.completionWithItemsHandler = { [unowned avc] type, completed, returnedItems, error in

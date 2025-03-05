@@ -48,7 +48,7 @@ class PhotoGridView: UIView {
                 let dragView = DragControl()
                 dragView.frame = CGRect(origin: .zero, size: .init(width: 30, height: 30))
                 dragView.layer.cornerRadius = 15
-                dragView.backgroundColor = .gray
+                dragView.backgroundColor = .cyan
                 dragView.isHidden = true
                 addSubview(dragView)
                 cacheDragControl[item.key] = dragView
@@ -188,12 +188,14 @@ class PhotoGridView: UIView {
                 //            drag.isHidden = true
             }
         }
-        var leftIntersects = intersects
-        var rightIntersects = intersects
+        // 通过分割线划分两个新的多边形
+        var subPolygonLeft: [CGPoint] = intersects
+        var subPolygonRight: [CGPoint] = intersects
         if lineWidth > 0 {
+            // 使用左右偏移的两条线，分别切割，各取左边和右边
             let halfBorder = lineWidth / 2
             let shiftedLeft = line.shiftLine(byDistance: -halfBorder)
-            leftIntersects = edges.compactMap { e in
+            subPolygonLeft = edges.compactMap { e in
                 guard let p = shiftedLeft.intersection(other: e) else {
                     return nil
                 }
@@ -203,7 +205,7 @@ class PhotoGridView: UIView {
                 return nil
             }
             let shiftedRight = line.shiftLine(byDistance: halfBorder)
-            rightIntersects = edges.compactMap { e in
+            subPolygonRight = edges.compactMap { e in
                 guard let p = shiftedRight.intersection(other: e) else {
                     return nil
                 }
@@ -212,23 +214,29 @@ class PhotoGridView: UIView {
                 }
                 return nil
             }
-        }
-        
-        // 通过分割线划分两个新的多边形
-        var subPolygon0: [CGPoint] = leftIntersects
-        var subPolygon1: [CGPoint] = rightIntersects
-        for p in polygon {
-            // 注意这里side a还是side b跟线的方向有关系
-            let position = line.sideOf(point: p)
-            if position == .a {
-                subPolygon0.append(p)
-            } else {
-                subPolygon1.append(p)
+            for p in polygon {
+                // 注意这里side a还是side b跟线的方向有关系
+                if shiftedLeft.sideOf(point: p) == .a {
+                    subPolygonLeft.append(p)
+                }
+                if shiftedRight.sideOf(point: p) != .a {
+                    subPolygonRight.append(p)
+                }
+            }
+        } else {
+            for p in polygon {
+                // 注意这里side a还是side b跟线的方向有关系
+                let position = line.sideOf(point: p)
+                if position == .a {
+                    subPolygonLeft.append(p)
+                } else {
+                    subPolygonRight.append(p)
+                }
             }
         }
         
-        draw(polygon: subPolygon0.sortClockwise(), item: item.left)
-        draw(polygon: subPolygon1.sortClockwise(), item: item.right)
+        draw(polygon: subPolygonLeft.sortClockwise(), item: item.left)
+        draw(polygon: subPolygonRight.sortClockwise(), item: item.right)
     }
 }
 
