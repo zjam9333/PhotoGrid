@@ -30,7 +30,7 @@ class ShapeOverlayView: UIView {
             path.close()
             shapeLayer?.path = path.cgPath
             shapeLayer?.fillColor = UIColor.clear.cgColor
-            shapeLayer?.strokeColor = UIColor.gray.cgColor
+            shapeLayer?.strokeColor = UIColor.cyan.cgColor
             shapeLayer?.lineWidth = 2
             shapeLayer?.lineDashPattern = [8, 4]
         }

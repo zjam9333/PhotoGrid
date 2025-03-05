@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C2D94E72D5DC78B00130FBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */; };
-		1C2D94E92D5DC78B00130FBB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94E82D5DC78B00130FBB /* SceneDelegate.swift */; };
-		1C2D94EB2D5DC78B00130FBB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94EA2D5DC78B00130FBB /* ViewController.swift */; };
-		1C2D94EE2D5DC78B00130FBB /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1C2D94ED2D5DC78B00130FBB /* Base */; };
+		1C2D94EB2D5DC78B00130FBB /* GridListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94EA2D5DC78B00130FBB /* GridListController.swift */; };
 		1C2D94F02D5DC78C00130FBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C2D94EF2D5DC78C00130FBB /* Assets.xcassets */; };
 		1C2D94F32D5DC78C00130FBB /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1C2D94F22D5DC78C00130FBB /* Base */; };
 		1C2D94FC2D5DD4FA00130FBB /* PhotoGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94FB2D5DD4FA00130FBB /* PhotoGridView.swift */; };
@@ -20,6 +18,8 @@
 		1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95042D5F2EAA00130FBB /* PresetColors.swift */; };
 		1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */; };
 		1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D95082D5F501B00130FBB /* GridItem.swift */; };
+		1C5C21EC2D77FB7E00E29785 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C21EB2D77FB7E00E29785 /* Main.storyboard */; };
+		1C5C21EE2D77FBAD00E29785 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C21ED2D77FBAD00E29785 /* SceneDelegate.swift */; };
 		1CD622E92D704510006F0B25 /* DragControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD622E82D704510006F0B25 /* DragControl.swift */; };
 		1CD622EB2D7598E5006F0B25 /* GridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD622EA2D7598E5006F0B25 /* GridViewController.swift */; };
 		1CD622ED2D759B47006F0B25 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */; };
@@ -28,9 +28,7 @@
 /* Begin PBXFileReference section */
 		1C2D94E32D5DC78B00130FBB /* PhotoGridTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoGridTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1C2D94E82D5DC78B00130FBB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1C2D94EA2D5DC78B00130FBB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		1C2D94ED2D5DC78B00130FBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1C2D94EA2D5DC78B00130FBB /* GridListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridListController.swift; sourceTree = "<group>"; };
 		1C2D94EF2D5DC78C00130FBB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C2D94F22D5DC78C00130FBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C2D94F42D5DC78C00130FBB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -41,6 +39,8 @@
 		1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeOverlayView.swift; sourceTree = "<group>"; };
 		1C2D95082D5F501B00130FBB /* GridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridItem.swift; sourceTree = "<group>"; };
 		1C2D950B2D5F56ED00130FBB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1C5C21EB2D77FB7E00E29785 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		1C5C21ED2D77FBAD00E29785 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1CD622E82D704510006F0B25 /* DragControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragControl.swift; sourceTree = "<group>"; };
 		1CD622EA2D7598E5006F0B25 /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
 		1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
@@ -82,11 +82,11 @@
 			children = (
 				1C2D94FA2D5DC79400130FBB /* PhotoGridView */,
 				1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */,
-				1C2D94E82D5DC78B00130FBB /* SceneDelegate.swift */,
-				1C2D94EA2D5DC78B00130FBB /* ViewController.swift */,
+				1C5C21ED2D77FBAD00E29785 /* SceneDelegate.swift */,
+				1C2D94EA2D5DC78B00130FBB /* GridListController.swift */,
 				1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */,
 				1CD622EA2D7598E5006F0B25 /* GridViewController.swift */,
-				1C2D94EC2D5DC78B00130FBB /* Main.storyboard */,
+				1C5C21EB2D77FB7E00E29785 /* Main.storyboard */,
 				1C2D94EF2D5DC78C00130FBB /* Assets.xcassets */,
 				1C2D94F12D5DC78C00130FBB /* LaunchScreen.storyboard */,
 				1C2D94F42D5DC78C00130FBB /* Info.plist */,
@@ -172,9 +172,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C5C21EC2D77FB7E00E29785 /* Main.storyboard in Resources */,
 				1C2D94F02D5DC78C00130FBB /* Assets.xcassets in Resources */,
 				1C2D94F32D5DC78C00130FBB /* Base in Resources */,
-				1C2D94EE2D5DC78B00130FBB /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,29 +188,21 @@
 				1CD622EB2D7598E5006F0B25 /* GridViewController.swift in Sources */,
 				1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */,
 				1CD622ED2D759B47006F0B25 /* CollectionViewCell.swift in Sources */,
-				1C2D94EB2D5DC78B00130FBB /* ViewController.swift in Sources */,
+				1C2D94EB2D5DC78B00130FBB /* GridListController.swift in Sources */,
 				1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */,
 				1C2D94FC2D5DD4FA00130FBB /* PhotoGridView.swift in Sources */,
 				1C2D95032D5DFFF200130FBB /* MaskPolygonView.swift in Sources */,
 				1C2D94E72D5DC78B00130FBB /* AppDelegate.swift in Sources */,
-				1C2D94E92D5DC78B00130FBB /* SceneDelegate.swift in Sources */,
 				1C2D95012D5DEB4700130FBB /* MathTools.swift in Sources */,
 				1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */,
 				1CD622E92D704510006F0B25 /* DragControl.swift in Sources */,
+				1C5C21EE2D77FBAD00E29785 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		1C2D94EC2D5DC78B00130FBB /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1C2D94ED2D5DC78B00130FBB /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		1C2D94F12D5DC78C00130FBB /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

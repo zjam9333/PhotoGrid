@@ -10,6 +10,7 @@ import UIKit
 class PhotoGridView: UIView {
     
     var borderWidth: CGFloat = 0
+    var lineWidth: CGFloat = 0
     var contentGetter: ((GridItem.Key) -> Any?)?
     
     private var cachePolyViews: [GridItem.Key: ImagePolygonView] = [:]
@@ -85,7 +86,7 @@ class PhotoGridView: UIView {
     func refreshSubviewsFrame() {
         var rect = bounds
         if borderWidth > 0 {
-            rect = rect.insetBy(dx: borderWidth / 2, dy: borderWidth / 2)
+            rect = rect.insetBy(dx: borderWidth, dy: borderWidth)
         }
         let poly = [
             rect.topLeft,
@@ -94,7 +95,7 @@ class PhotoGridView: UIView {
             rect.bottomRight,
         ].sortClockwise()
         
-        draw(polygon: poly, item: json.item, parentLine: nil)
+        draw(polygon: poly, item: json.item)
     }
     
     func refreshSubviewsContent() {
@@ -107,7 +108,7 @@ class PhotoGridView: UIView {
         }
     }
     
-    private func draw(polygon: [CGPoint], item: GridItem, parentLine: GridDivider?) {
+    private func draw(polygon: [CGPoint], item: GridItem) {
         guard let item = item as? GridDivider else {
             guard let item = item as? GridPolygon else {
                 return
@@ -119,7 +120,7 @@ class PhotoGridView: UIView {
             let notEnough = polygon.count < 3 // 至少要3角形
             poly.isHidden = notEnough
             
-            poly.setPolygon(points: polygon, borderWidth: borderWidth / 2)
+            poly.setPolygon(points: polygon) // 多边形已经收缩过了，不需要内部再处理
             let controllableKeys: [Int] = item.controllableKeys
             poly.onTap = { [weak self, weak item] in
                 self?.cacheDragControl.values.forEach { drag in
@@ -187,10 +188,35 @@ class PhotoGridView: UIView {
                 //            drag.isHidden = true
             }
         }
+        var leftIntersects = intersects
+        var rightIntersects = intersects
+        if lineWidth > 0 {
+            let halfBorder = lineWidth / 2
+            let shiftedLeft = line.shiftLine(byDistance: -halfBorder)
+            leftIntersects = edges.compactMap { e in
+                guard let p = shiftedLeft.intersection(other: e) else {
+                    return nil
+                }
+                if polygonOuterRect.contains(p) && p.almostLiesInside(polygon: polygon) {
+                    return p
+                }
+                return nil
+            }
+            let shiftedRight = line.shiftLine(byDistance: halfBorder)
+            rightIntersects = edges.compactMap { e in
+                guard let p = shiftedRight.intersection(other: e) else {
+                    return nil
+                }
+                if polygonOuterRect.contains(p) && p.almostLiesInside(polygon: polygon) {
+                    return p
+                }
+                return nil
+            }
+        }
         
         // 通过分割线划分两个新的多边形
-        var subPolygon0: [CGPoint] = [] + intersects
-        var subPolygon1: [CGPoint] = [] + intersects
+        var subPolygon0: [CGPoint] = leftIntersects
+        var subPolygon1: [CGPoint] = rightIntersects
         for p in polygon {
             // 注意这里side a还是side b跟线的方向有关系
             let position = line.sideOf(point: p)
@@ -201,8 +227,8 @@ class PhotoGridView: UIView {
             }
         }
         
-        draw(polygon: subPolygon0.sortClockwise(), item: item.left, parentLine: item)
-        draw(polygon: subPolygon1.sortClockwise() ,item: item.right, parentLine: item)
+        draw(polygon: subPolygon0.sortClockwise(), item: item.left)
+        draw(polygon: subPolygon1.sortClockwise(), item: item.right)
     }
 }
 

@@ -22,6 +22,7 @@ class CollectionViewCell: UICollectionViewCell {
         redView = PhotoGridView(json: .init(width: 320, height: 320, item: .random()))
         redView.frame = CGRect(origin: .zero, size: .init(width: 320, height: 320))
         redView.borderWidth = 5
+        redView.lineWidth = 5
         redView.isUserInteractionEnabled = false
         contentView.addSubview(redView)
     }

@@ -33,7 +33,7 @@ class MaskPolygonView: UIView {
         maskLayer.frame = bounds
     }
     
-    func setPolygon(points: [CGPoint], borderWidth: CGFloat = 0) {
+    func setPolygon(points: [CGPoint]) {
         guard let top = points.top, let bottom = points.bottom, let left = points.left, let right = points.right else {
             return;
         }
@@ -44,11 +44,8 @@ class MaskPolygonView: UIView {
         maskPolyPoints = points.map { p in
             return CGPoint(x: p.x - fra.origin.x, y: p.y - fra.origin.y)
         }
-        var usingPoints = maskPolyPoints
-        if borderWidth > 0 {
-            // TODO: 需解决直线相交问题
-            usingPoints = ShrinkPolygon.shrinkPolygon(usingPoints, by: borderWidth)
-        }
+        
+        let usingPoints = maskPolyPoints
         
         let path = UIBezierPath()
         guard let first = usingPoints.first else {

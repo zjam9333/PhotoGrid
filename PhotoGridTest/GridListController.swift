@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  GridListController.swift
 //  PhotoGridTest
 //
 //  Created by zhangjingjian on 2025/2/13.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import PhotosUI
 
-class ViewController: UIViewController {
+class GridListController: UIViewController {
     var collectionView: UICollectionView!
     
     var compositionalLayout: UICollectionViewCompositionalLayout!
@@ -77,7 +77,7 @@ class ViewController: UIViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detail = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "griddetail") as! GridViewController
+        let detail = GridViewController()
         let model = diffDataSource.itemIdentifier(for: indexPath)!
         // 复制一份全新的
         detail.gridJson = GridJson.fromJson(model.gridJson.toJson())
@@ -113,7 +113,7 @@ class ViewController: UIViewController {
         }
     }
 }
-extension ViewController: PHPickerViewControllerDelegate {
+extension GridListController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
         var idx = 0
@@ -144,7 +144,7 @@ extension ViewController: PHPickerViewControllerDelegate {
     }
 }
 
-extension ViewController: UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension GridListController: UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // 实现 UIImagePickerControllerDelegate 协议方法，处理用户选择图片的操作
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let img = info[.originalImage] as? UIImage {

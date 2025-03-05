@@ -10,7 +10,7 @@ import QuickLook
 
 class GridViewController: UIViewController {
     
-    @IBAction func exportJson(_ sender: Any?) {
+    @objc func exportJson(_ sender: Any?) {
         let json = gridJson.toJson()
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys])
@@ -38,7 +38,7 @@ class GridViewController: UIViewController {
         }
     }
     
-    @IBAction func captureImage(_ sender: Any) {
+    @objc func captureImage(_ sender: Any) {
         let renderer = UIGraphicsImageRenderer(size: redView.bounds.size)
         let image = renderer.image { [weak self] ctx in
             guard let view = self?.redView else {
@@ -51,6 +51,18 @@ class GridViewController: UIViewController {
         snapshowImageView.image = image
     }
     
+    @objc func sliderValueChanged(_ sender: UISlider) {
+        switch sender.tag {
+        case 1:
+            redView.borderWidth = CGFloat(sender.value)
+        case 2:
+            redView.lineWidth = CGFloat(sender.value)
+        default:
+            return
+        }
+        redView.refreshSubviewsFrame()
+    }
+    
     private var jsonURL: URL!
     private var redView: PhotoGridView!
     private var snapshowImageView: UIImageView!
@@ -60,15 +72,18 @@ class GridViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .white
+        
         self.navigationItem.title = "Grid Detail"
         
         redView = PhotoGridView(json: gridJson)
         redView.borderWidth = 5
+        redView.lineWidth = 5
         view.addSubview(redView)
         
         redView.snp.makeConstraints { make in
             make.centerX.equalTo(view)
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(100)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.width.equalTo(gridJson.width)
             make.height.equalTo(gridJson.height)
         }
@@ -91,11 +106,78 @@ class GridViewController: UIViewController {
             make.left.equalTo(20)
             make.width.height.equalTo(100)
         }
-    }
-    
-    @IBAction func stepperValueChanged(_ sender: UISlider) {
-        redView.borderWidth = CGFloat(sender.value)
-        redView.refreshSubviewsFrame()
+        
+        let stack = UIStackView(arrangedSubviews: [
+            {
+                let b = UIButton(type: .system)
+                b.setTitle("导出JSON", for: .normal)
+                b.addTarget(self, action: #selector(exportJson), for: .touchUpInside)
+                return b
+            }(),
+            {
+                let b = UIButton(type: .system)
+                b.setTitle("截图打断点看看", for: .normal)
+                b.addTarget(self, action: #selector(captureImage), for: .touchUpInside)
+                return b
+            }(),
+            {
+                let stack = UIStackView(arrangedSubviews: [
+                    {
+                        let b = UILabel()
+                        b.text = "边框"
+                        b.textColor = .black
+                        return b
+                    }(),
+                    {
+                        let b = UISlider()
+                        b.tag = 1
+                        b.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+                        b.minimumValue = 0
+                        b.maximumValue = 50
+                        b.value = 5
+                        b.snp.makeConstraints { make in
+                            make.width.equalTo(120)
+                        }
+                        return b
+                    }(),
+                ])
+                stack.axis = .horizontal
+                stack.spacing = 10
+                return stack
+            }(),
+            {
+                let stack = UIStackView(arrangedSubviews: [
+                    {
+                        let b = UILabel()
+                        b.text = "线粗"
+                        b.textColor = .black
+                        return b
+                    }(),
+                    {
+                        let b = UISlider()
+                        b.tag = 2
+                        b.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+                        b.minimumValue = 0
+                        b.maximumValue = 50
+                        b.value = 5
+                        b.snp.makeConstraints { make in
+                            make.width.equalTo(120)
+                        }
+                        return b
+                    }(),
+                ])
+                stack.axis = .horizontal
+                stack.spacing = 10
+                return stack
+            }(),
+        ])
+        stack.axis = .vertical
+        stack.spacing = 10
+        view.addSubview(stack)
+        stack.snp.makeConstraints { make in
+            make.top.equalTo(redView.snp.bottom).offset(40)
+            make.centerX.equalToSuperview()
+        }
     }
 }
 extension GridViewController: QLPreviewControllerDataSource {
