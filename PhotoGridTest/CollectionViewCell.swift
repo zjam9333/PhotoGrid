@@ -36,7 +36,6 @@ class CollectionViewCell: UICollectionViewCell {
         let scale = bounds.size.width / model.gridJson.width
         redView.transform = .init(scaleX: scale, y: scale)
         redView.frame = bounds
-        redView.refreshSubviewsFrame()
     }
 }
 

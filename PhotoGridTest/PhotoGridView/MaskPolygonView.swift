@@ -57,7 +57,6 @@ class MaskPolygonView: UIView {
         }
         path.close()
         maskLayer.path = path.cgPath
-        maskLayer.fillRule = .nonZero
         
         contentView.frame = CGRect(top: usingPoints.top ?? 0, left: usingPoints.left ?? 0, bottom: usingPoints.bottom ?? 0, right: usingPoints.right ?? 0).insetBy(dx: -1, dy: -1)
     }

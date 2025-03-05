@@ -145,24 +145,13 @@ class PhotoGridView: UIView {
         
         let line = item.line.offset(item.offset)
         
-        let edges = polygon.toEdges()
-        let polygonOuterRect = CGRect(top: polygon.top ?? 0, left: polygon.left ?? 0, bottom: polygon.bottom ?? 0, right: polygon.right ?? 0).insetBy(dx: -1, dy: -1)
-        
-        let intersects: [CGPoint] = edges.compactMap { e in
-            guard let p = line.intersection(other: e) else {
-                return nil
-            }
-            if polygonOuterRect.contains(p) && p.almostLiesInside(polygon: polygon) {
-                return p
-            }
-            return nil
-        }
+        let intersects = polygon.intersections(line: line)
         
         if let dragView: DragControl = cacheDragControl[item.key] {
             dragView.onDrag = { [weak self] touch in
                 let pointInSelf = touch.location(in: self)
                 let center = item.line.center
-                let newOffset = CGVector(dx: pointInSelf.x - center.x, dy: pointInSelf.y - center.y)
+                let newOffset = CGPoint(x: pointInSelf.x - center.x, y: pointInSelf.y - center.y)
                 item.offset = newOffset
                 
                 let syncGroup = Set(item.syncGroup)
@@ -194,32 +183,16 @@ class PhotoGridView: UIView {
         if lineWidth > 0 {
             // 使用左右偏移的两条线，分别切割，各取左边和右边
             let halfBorder = lineWidth / 2
-            let shiftedLeft = line.shiftLine(byDistance: -halfBorder)
-            subPolygonLeft = edges.compactMap { e in
-                guard let p = shiftedLeft.intersection(other: e) else {
-                    return nil
-                }
-                if polygonOuterRect.contains(p) && p.almostLiesInside(polygon: polygon) {
-                    return p
-                }
-                return nil
-            }
-            let shiftedRight = line.shiftLine(byDistance: halfBorder)
-            subPolygonRight = edges.compactMap { e in
-                guard let p = shiftedRight.intersection(other: e) else {
-                    return nil
-                }
-                if polygonOuterRect.contains(p) && p.almostLiesInside(polygon: polygon) {
-                    return p
-                }
-                return nil
-            }
+            let shiftedLeft = line.shifted(byDistance: -halfBorder)
+            subPolygonLeft = polygon.intersections(line: shiftedLeft)
+            let shiftedRight = line.shifted(byDistance: halfBorder)
+            subPolygonRight = polygon.intersections(line: shiftedRight)
             for p in polygon {
                 // 注意这里side a还是side b跟线的方向有关系
-                if shiftedLeft.sideOf(point: p) == .a {
+                if shiftedLeft.sideOf(point: p) == .left {
                     subPolygonLeft.append(p)
                 }
-                if shiftedRight.sideOf(point: p) != .a {
+                if shiftedRight.sideOf(point: p) != .left {
                     subPolygonRight.append(p)
                 }
             }
@@ -227,7 +200,7 @@ class PhotoGridView: UIView {
             for p in polygon {
                 // 注意这里side a还是side b跟线的方向有关系
                 let position = line.sideOf(point: p)
-                if position == .a {
+                if position == .left {
                     subPolygonLeft.append(p)
                 } else {
                     subPolygonRight.append(p)

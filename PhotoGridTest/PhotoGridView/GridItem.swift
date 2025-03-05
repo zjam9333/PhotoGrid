@@ -82,10 +82,10 @@ class GridDivider: GridItem {
     let line: GGLine
     var left: GridItem
     var right: GridItem
-    var offset: CGVector
+    var offset: CGPoint
     let syncGroup: [Key]
     
-    init(key: Key, line: GGLine, left: GridItem = .random(), right: GridItem = .random(), offset: CGVector = .zero, syncGroup: [Key] = []) {
+    init(key: Key, line: GGLine, left: GridItem = .random(), right: GridItem = .random(), offset: CGPoint = .zero, syncGroup: [Key] = []) {
         self.line = line
         self.left = left
         self.right = right
@@ -112,7 +112,7 @@ class GridDivider: GridItem {
         let left = GridItem.fromJson(json["left"] as? [String: Any] ?? [:])
         let right = GridItem.fromJson(json["right"] as? [String: Any] ?? [:])
         
-        return GridDivider(key: key, line: .init(x1: x1, y1: y1, x2: x2, y2: y2), left: left, right: right, offset: .init(dx: dx, dy: dy), syncGroup: syncGroup)
+        return GridDivider(key: key, line: .init(x1: x1, y1: y1, x2: x2, y2: y2), left: left, right: right, offset: .init(x: dx, y: dy), syncGroup: syncGroup)
     }
     
     override func toJson() -> [String : Any] {
@@ -126,8 +126,8 @@ class GridDivider: GridItem {
                 "y2": line.y2,
             ],
             "offset": [
-                "dx": offset.dx,
-                "dy": offset.dy,
+                "dx": offset.x,
+                "dy": offset.y,
             ],
             "left": left.toJson(),
             "right": right.toJson(),

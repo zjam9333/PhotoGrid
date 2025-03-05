@@ -83,8 +83,35 @@ extension Array where Element == CGPoint {
         }
         return res
     }
+    
+    func intersections(line: GGLine) -> [Element] {
+        /// 判断点在线上
+        /// 使用范围：求两条直线交点后使用
+        func segmentContains(p1: CGPoint, p2: CGPoint, point: CGPoint) -> Bool {
+            let minX = Swift.min(p1.x, p2.x) - 0.1 // 加减0.1忽略浮点数的精度
+            let maxX = Swift.max(p1.x, p2.x) + 0.1
+            let minY = Swift.min(p1.y, p2.y) - 0.1
+            let maxY = Swift.max(p1.y, p2.y) + 0.1
+            return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY
+        }
+        
+        let edges = toEdges()
+        
+        let intersects: [CGPoint] = edges.compactMap { e in
+            guard let p = line.intersection(other: e) else {
+                return nil
+            }
+            guard segmentContains(p1: e.p1, p2: e.p2, point: p) else {
+                return nil
+            }
+            return p
+        }
+        return intersects
+    }
 }
 
+/// 多边形向内收缩算法（已过时）
+/// 太复杂且边界条件太多，不可靠，容易出现相交的结果
 struct ShrinkPolygon {
     /// 这个老方法直接用向量平移，简单很多，但是生成的新边与旧边不平行，会产生轻微的旋转
     static private func shrinkPolygon2(_ polygon: [CGPoint], by distance: CGFloat) -> [CGPoint] {
@@ -128,7 +155,7 @@ struct ShrinkPolygon {
             let p0 = polygon[i]
             let p1 = polygon[(i + 1) % count]
             let oldLine = GGLine(p1: p0, p2: p1)
-            let shiftLine = oldLine.shiftLine(byDistance: distance)
+            let shiftLine = oldLine.shifted(byDistance: distance)
             newLines.append(shiftLine)
         }
         var shrunkPoints: [CGPoint] = []
@@ -215,29 +242,6 @@ extension CGPoint {
         return inside
     }
     
-    /// 判断点在多边形内
-    /// 允许一点点的误差，特别是靠近边界的，因为0点几就误判了
-    func almostLiesInside(polygon: [CGPoint]) -> Bool {
-        let p = self
-        if p.liesInside(polygon: polygon) {
-            return true
-        }
-        // 差了0.几的误差
-        if CGPoint(x: p.x + 0.1, y: p.y).liesInside(polygon: polygon) {
-            return true
-        }
-        if CGPoint(x: p.x - 0.1, y: p.y).liesInside(polygon: polygon) {
-            return true
-        }
-        if CGPoint(x: p.x, y: p.y + 0.1).liesInside(polygon: polygon) {
-            return true
-        }
-        if CGPoint(x: p.x, y: p.y - 0.1).liesInside(polygon: polygon) {
-            return true
-        }
-        return false
-    }
-    
     func normalized() -> CGPoint {
         let length = sqrt(x * x + y * y)
         if length == 0 {
@@ -267,8 +271,8 @@ struct GGLine {
         return p2.y
     }
     
-    func offset(_ offset: CGVector) -> GGLine {
-        return .init(x1: p1.x + offset.dx, y1: p1.y + offset.dy, x2: p2.x + offset.dx, y2: p2.y + offset.dy)
+    func offset(_ offset: CGPoint) -> GGLine {
+        return .init(x1: p1.x + offset.x, y1: p1.y + offset.y, x2: p2.x + offset.x, y2: p2.y + offset.y)
     }
     
     func reverted() -> GGLine {
@@ -316,8 +320,8 @@ struct GGLine {
     
     enum Side {
         case onLine
-        case a
-        case b
+        case left
+        case right
     }
     
     /// 判断点在线的哪边？
@@ -327,7 +331,7 @@ struct GGLine {
     ///      p2
     ///      ^
     ///      |
-    ///  a   |   b
+    /// left | right
     ///      |
     ///      p1
     /// ```
@@ -340,16 +344,16 @@ struct GGLine {
         if (determinant == 0) {
             return .onLine
         } else if (determinant > 0) {
-            return .b
+            return .right
         }
-        return .a
+        return .left
     }
     
     var center: CGPoint {
         return CGPoint(x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2)
     }
     
-    func shiftLine(byDistance distance: CGFloat) -> GGLine {
+    func shifted(byDistance distance: CGFloat) -> GGLine {
         // 计算直线的方向向量
         let directionVector = CGPoint(x: p2.x - p1.x, y: p2.y - p1.y)
         // 法向量

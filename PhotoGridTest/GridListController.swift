@@ -48,6 +48,7 @@ class GridListController: UIViewController {
             }
             DispatchQueue.main.async {
                 // TODO: 这个时序有点问题，待优化
+                cell.redView.refreshSubviewsFrame()
                 cell.redView.refreshSubviewsContent()
             }
             return cell
@@ -70,7 +71,7 @@ class GridListController: UIViewController {
             .init(originalJson: json2),
             .init(originalJson: json3),
             .init(originalJson: json4),
-            .init(originalJson: json),
+            .init(originalJson: json5),
             .init(originalJson: json),
         ])
         diffDataSource.apply(snap)
@@ -470,6 +471,95 @@ let json4: String = """
                 "dx": -50,
                 "dy": 0
             },
+            "left": {
+                "type": "polygon",
+                "key": 2,
+                "controllableKeys": [
+                    2,
+                    0
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 3,
+                "controllableKeys": [
+                    2,
+                    0
+                ]
+            }
+        }
+    }
+}
+"""
+
+let json5 = """
+{
+    "width": 300,
+    "height": 300,
+    "item": {
+        "type": "line",
+        "key": 0,
+        "line": {
+            "x1": 0,
+            "y1": 180,
+            "x2": 300,
+            "y2": 120
+        },
+        "offset": {
+            "dx": 0,
+            "dy": 0
+        },
+        "left": {
+            "type": "line",
+            "key": 1,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 180,
+                "y2": 300
+            },
+            "offset": {
+                "dx": 0,
+                "dy": 0
+            },
+            "syncGroup": [
+                1,
+                2
+            ],
+            "left": {
+                "type": "polygon",
+                "key": 0,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            },
+            "right": {
+                "type": "polygon",
+                "key": 1,
+                "controllableKeys": [
+                    0,
+                    1
+                ]
+            }
+        },
+        "right": {
+            "type": "line",
+            "key": 2,
+            "line": {
+                "x1": 150,
+                "y1": 0,
+                "x2": 180,
+                "y2": 300
+            },
+            "offset": {
+                "dx": 0,
+                "dy": 0
+            },
+            "syncGroup": [
+                1,
+                2
+            ],
             "left": {
                 "type": "polygon",
                 "key": 2,
