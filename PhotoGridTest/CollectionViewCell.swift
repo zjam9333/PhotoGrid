@@ -21,8 +21,6 @@ class CollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         redView = PhotoGridView(json: .init(width: 320, height: 320, item: .random()))
         redView.frame = CGRect(origin: .zero, size: .init(width: 320, height: 320))
-        redView.borderWidth = 5
-        redView.lineWidth = 5
         redView.isUserInteractionEnabled = false
         contentView.addSubview(redView)
     }
@@ -33,9 +31,13 @@ class CollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        redView.transform = .identity
+        redView.frame = .init(x: 0, y: 0, width: model.gridJson.width, height: model.gridJson.height)
         let scale = bounds.size.width / model.gridJson.width
         redView.transform = .init(scaleX: scale, y: scale)
         redView.frame = bounds
+        
+        redView.refreshSubviewsFrame()
     }
 }
 

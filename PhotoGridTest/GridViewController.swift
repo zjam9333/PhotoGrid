@@ -54,9 +54,11 @@ class GridViewController: UIViewController {
     @objc func sliderValueChanged(_ sender: UISlider) {
         switch sender.tag {
         case 1:
-            redView.borderWidth = CGFloat(sender.value)
+            redView.json.borderWidth = CGFloat(sender.value)
         case 2:
-            redView.lineWidth = CGFloat(sender.value)
+            redView.json.lineWidth = CGFloat(sender.value)
+        case 3:
+            redView.json.cornerRadius = CGFloat(sender.value)
         default:
             return
         }
@@ -77,8 +79,6 @@ class GridViewController: UIViewController {
         self.navigationItem.title = "Grid Detail"
         
         redView = PhotoGridView(json: gridJson)
-        redView.borderWidth = 5
-        redView.lineWidth = 5
         view.addSubview(redView)
         
         redView.snp.makeConstraints { make in
@@ -134,7 +134,7 @@ class GridViewController: UIViewController {
                         b.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
                         b.minimumValue = 0
                         b.maximumValue = 50
-                        b.value = 5
+                        b.value = Float(redView.json.borderWidth)
                         b.snp.makeConstraints { make in
                             make.width.equalTo(120)
                         }
@@ -159,7 +159,32 @@ class GridViewController: UIViewController {
                         b.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
                         b.minimumValue = 0
                         b.maximumValue = 50
-                        b.value = 5
+                        b.value = Float(redView.json.lineWidth)
+                        b.snp.makeConstraints { make in
+                            make.width.equalTo(120)
+                        }
+                        return b
+                    }(),
+                ])
+                stack.axis = .horizontal
+                stack.spacing = 10
+                return stack
+            }(),
+            {
+                let stack = UIStackView(arrangedSubviews: [
+                    {
+                        let b = UILabel()
+                        b.text = "圆角"
+                        b.textColor = .black
+                        return b
+                    }(),
+                    {
+                        let b = UISlider()
+                        b.tag = 3
+                        b.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+                        b.minimumValue = 0
+                        b.maximumValue = 50
+                        b.value = Float(redView.json.cornerRadius)
                         b.snp.makeConstraints { make in
                             make.width.equalTo(120)
                         }

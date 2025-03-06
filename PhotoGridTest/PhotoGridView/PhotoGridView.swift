@@ -8,9 +8,6 @@
 import UIKit
 
 class PhotoGridView: UIView {
-    
-    var borderWidth: CGFloat = 0
-    var lineWidth: CGFloat = 0
     var contentGetter: ((GridItem.Key) -> Any?)?
     
     private var cachePolyViews: [GridItem.Key: ImagePolygonView] = [:]
@@ -21,37 +18,45 @@ class PhotoGridView: UIView {
     
     private var currentOverlayItem: GridItem? = nil
     
-    private var json: GridJson
+    private(set) var json: GridJson
     private var randomColor = PresetColors()
     
     func updateGrid(json: GridJson) {
         self.json = json
         randomColor = PresetColors()
         cachePolyViews.values.forEach { v in
-            v.removeFromSuperview()
+            v.isHidden = true
         }
         cacheDragControl.values.forEach { v in
-            v.removeFromSuperview()
+            v.isHidden = true
         }
         overlayView.overlayPolygon = []
-        cachePolyViews.removeAll()
-        cacheDragControl.removeAll()
+//        cachePolyViews.removeAll()
+//        cacheDragControl.removeAll()
         currentOverlayItem = nil
         
         func cacheItem(_ item: GridItem) {
             if let item = item as? GridPolygon {
-                let poly = ImagePolygonView()
-                poly.backgroundColor = randomColor.next()
-                contentView.insertSubview(poly, at: 0)
-                cachePolyViews[item.key] = poly
+                if let poly = cachePolyViews[item.key] {
+                    poly.isHidden = false
+                } else {
+                    let poly = ImagePolygonView()
+                    poly.backgroundColor = randomColor.next()
+                    contentView.insertSubview(poly, at: 0)
+                    cachePolyViews[item.key] = poly
+                }
             } else if let item = item as? GridDivider {
-                let dragView = DragControl()
-                dragView.frame = CGRect(origin: .zero, size: .init(width: 30, height: 30))
-                dragView.layer.cornerRadius = 15
-                dragView.backgroundColor = .cyan
-                dragView.isHidden = true
-                addSubview(dragView)
-                cacheDragControl[item.key] = dragView
+                if let drag = cacheDragControl[item.key] {
+                    drag.isHidden = true
+                } else {
+                    let dragView = DragControl()
+                    dragView.frame = CGRect(origin: .zero, size: .init(width: 30, height: 30))
+                    dragView.layer.cornerRadius = 15
+                    dragView.backgroundColor = .cyan
+                    dragView.isHidden = true
+                    addSubview(dragView)
+                    cacheDragControl[item.key] = dragView
+                }
                 cacheItem(item.left)
                 cacheItem(item.right)
             }
@@ -85,8 +90,8 @@ class PhotoGridView: UIView {
     
     func refreshSubviewsFrame() {
         var rect = bounds
-        if borderWidth > 0 {
-            rect = rect.insetBy(dx: borderWidth, dy: borderWidth)
+        if json.borderWidth > 0 {
+            rect = rect.insetBy(dx: json.borderWidth, dy: json.borderWidth)
         }
         let poly = [
             rect.topLeft,
@@ -120,7 +125,7 @@ class PhotoGridView: UIView {
             let notEnough = polygon.count < 3 // 至少要3角形
             poly.isHidden = notEnough
             
-            poly.setPolygon(points: polygon) // 多边形已经收缩过了，不需要内部再处理
+            poly.setPolygon(points: polygon, cornerRadius: json.cornerRadius) // 多边形已经收缩过了，不需要内部再处理
             let controllableKeys: [Int] = item.controllableKeys
             poly.onTap = { [weak self, weak item] in
                 self?.cacheDragControl.values.forEach { drag in
@@ -180,9 +185,9 @@ class PhotoGridView: UIView {
         // 通过分割线划分两个新的多边形
         var subPolygonLeft: [CGPoint] = intersects
         var subPolygonRight: [CGPoint] = intersects
-        if lineWidth > 0 {
+        if json.lineWidth > 0 {
             // 使用左右偏移的两条线，分别切割，各取左边和右边
-            let halfBorder = lineWidth / 2
+            let halfBorder = json.lineWidth / 2
             let shiftedLeft = line.shifted(byDistance: -halfBorder)
             subPolygonLeft = polygon.intersections(line: shiftedLeft)
             let shiftedRight = line.shifted(byDistance: halfBorder)

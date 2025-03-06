@@ -242,12 +242,31 @@ extension CGPoint {
         return inside
     }
     
-    func normalized() -> CGPoint {
+    func length() -> CGFloat {
         let length = sqrt(x * x + y * y)
+        return length
+    }
+    
+    func normalized() -> CGPoint {
+        let length = length()
         if length == 0 {
             return self
         }
         return CGPoint(x: x / length, y: y / length)
+    }
+    
+    static func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+        return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+    }
+    
+    func dotProduct(with other: CGPoint) -> CGFloat {
+        return x * other.x + y * other.y
+    }
+    
+    func center(with other: CGPoint) -> CGPoint {
+        let p1 = self
+        let p2 = other
+        return CGPoint(x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2)
     }
 }
 

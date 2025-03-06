@@ -16,11 +16,19 @@ protocol FromJSON: AnyObject {
 class GridJson: FromJSON {
     let width: CGFloat
     let height: CGFloat
+    
+    var borderWidth: CGFloat
+    var lineWidth: CGFloat
+    var cornerRadius: CGFloat
+    
     let item: GridItem
     
-    init(width: CGFloat, height: CGFloat, item: GridItem) {
+    init(width: CGFloat, height: CGFloat, borderWidth: CGFloat = 0, lineWidth: CGFloat = 0, cornerRadius: CGFloat = 0, item: GridItem) {
         self.width = width
         self.height = height
+        self.borderWidth = borderWidth
+        self.lineWidth = lineWidth
+        self.cornerRadius = cornerRadius
         self.item = item
     }
     
@@ -28,13 +36,19 @@ class GridJson: FromJSON {
         let width = json["width"] as? CGFloat ?? 0
         let height = json["height"] as? CGFloat ?? 0
         let item = GridItem.fromJson(json["item"] as? [String: Any] ?? [:])
-        return .init(width: width, height: height, item: item)
+        let borderWidth = json["borderWidth"] as? CGFloat ?? 0
+        let lineWidth = json["lineWidth"] as? CGFloat ?? 0
+        let cornerRadius = json["cornerRadius"] as? CGFloat ?? 0
+        return .init(width: width, height: height, borderWidth: borderWidth, lineWidth: lineWidth, cornerRadius: cornerRadius, item: item)
     }
     
     func toJson() -> [String : Any] {
         return [
             "width": width,
             "height": height,
+            "borderWidth": borderWidth,
+            "lineWidth": lineWidth,
+            "cornerRadius": cornerRadius,
             "item": item.toJson(),
         ]
     }

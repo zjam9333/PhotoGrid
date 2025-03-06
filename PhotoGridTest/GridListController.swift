@@ -21,7 +21,7 @@ class GridListController: UIViewController {
         super.viewDidLoad()
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewImages))
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(deleteImages))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(reloadAll))
         
         self.navigationItem.title = "Grid List"
         
@@ -46,11 +46,7 @@ class GridListController: UIViewController {
                 }
                 return nil
             }
-            DispatchQueue.main.async {
-                // TODO: 这个时序有点问题，待优化
-                cell.redView.refreshSubviewsFrame()
-                cell.redView.refreshSubviewsContent()
-            }
+            cell.redView.refreshSubviewsContent()
             return cell
         }
         
@@ -62,7 +58,43 @@ class GridListController: UIViewController {
             make.edges.equalTo(0)
         }
         
+        let test = TestPathView()
+        view.addSubview(test)
+        test.snp.makeConstraints { make in
+            make.bottom.equalTo(-60)
+            make.height.width.equalTo(200)
+            make.left.equalTo(40)
+        }
+        
+        reloadAll()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        for i in collectionView.visibleCells {
+            if let cell = i as? CollectionViewCell {
+                cell.redView.refreshSubviewsFrame()
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detail = GridViewController()
+        let model = diffDataSource.itemIdentifier(for: indexPath)!
+        detail.gridJson = model.gridJson
+        detail.selectedImages = selectedImages
+        navigationController?.pushViewController(detail, animated: true)
+    }
+    
+    @objc func addNewImages() {
+        pickImageUsePHPicker()
+    }
+    
+    @objc func reloadAll() {
+        selectedImages.removeAll()
+        
         var snap = diffDataSource.snapshot()
+        snap.deleteAllItems()
         snap.appendSections([0])
         snap.appendItems([
             .init(originalJson: jsonOnlyOne),
@@ -75,24 +107,6 @@ class GridListController: UIViewController {
             .init(originalJson: json),
         ])
         diffDataSource.apply(snap)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detail = GridViewController()
-        let model = diffDataSource.itemIdentifier(for: indexPath)!
-        // 复制一份全新的
-        detail.gridJson = GridJson.fromJson(model.gridJson.toJson())
-        detail.selectedImages = selectedImages
-        navigationController?.pushViewController(detail, animated: true)
-    }
-    
-    @objc func addNewImages() {
-        pickImageUsePHPicker()
-    }
-    
-    @objc func deleteImages() {
-        selectedImages.removeAll()
-        collectionView.reloadData()
     }
     
     private func pickImageUsePHPicker() {
@@ -140,7 +154,11 @@ extension GridListController: PHPickerViewControllerDelegate {
             }
         }
         group.notify(queue: .main) { [weak self] in
-            self?.collectionView.reloadData()
+            for i in self?.collectionView.visibleCells ?? [] {
+                if let cell = i as? CollectionViewCell {
+                    cell.redView.refreshSubviewsContent()
+                }
+            }
         }
     }
 }
@@ -165,6 +183,7 @@ let jsonOnlyOne: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 10,
     "item": {
         "type": "polygon",
         "key": 0
@@ -176,6 +195,8 @@ let json0: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 20,
+    "lineWidth": 20,
     "item": {
         "type": "line",
         "key": 0,
@@ -211,6 +232,8 @@ let json1: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 10,
+    "lineWidth": 8,
     "item": {
         "type": "line",
         "key": 0,
@@ -269,6 +292,8 @@ let json2: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 10,
+    "lineWidth": 5,
     "item": {
         "type": "line",
         "key": 0,
@@ -326,6 +351,8 @@ let json3: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 10,
+    "lineWidth": 10,
     "item": {
         "type": "line",
         "key": 0,
@@ -415,6 +442,8 @@ let json4: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 5,
+    "lineWidth": 5,
     "item": {
         "type": "line",
         "key": 0,
@@ -496,6 +525,9 @@ let json5 = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 10,
+    "lineWidth": 20,
+    "cornerRadius": 10,
     "item": {
         "type": "line",
         "key": 0,
@@ -585,6 +617,9 @@ let json: String = """
 {
     "width": 300,
     "height": 300,
+    "borderWidth": 10,
+    "lineWidth": 10,
+    "cornerRadius": 10,
     "item": {
         "type": "line",
         "key": 0,
