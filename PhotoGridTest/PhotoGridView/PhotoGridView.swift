@@ -45,14 +45,12 @@ class PhotoGridView: UIView {
                     contentView.insertSubview(poly, at: 0)
                     cachePolyViews[item.key] = poly
                 }
-            } else if let item = item as? GridDivider {
+            } else if let item = item as? GridLine {
                 if let drag = cacheDragControl[item.key] {
                     drag.isHidden = true
                 } else {
                     let dragView = DragControl()
                     dragView.frame = CGRect(origin: .zero, size: .init(width: 30, height: 30))
-                    dragView.layer.cornerRadius = 15
-                    dragView.backgroundColor = .cyan
                     dragView.isHidden = true
                     addSubview(dragView)
                     cacheDragControl[item.key] = dragView
@@ -114,7 +112,7 @@ class PhotoGridView: UIView {
     }
     
     private func draw(polygon: [CGPoint], item: GridItem) {
-        guard let item = item as? GridDivider else {
+        guard let item = item as? GridLine else {
             guard let item = item as? GridPolygon else {
                 return
             }
@@ -161,7 +159,7 @@ class PhotoGridView: UIView {
                 
                 let syncGroup = Set(item.syncGroup)
                 func findAndSync(item: GridItem?) {
-                    guard let item = item as? GridDivider else {
+                    guard let item = item as? GridLine else {
                         return
                     }
                     if syncGroup.contains(item.key) {

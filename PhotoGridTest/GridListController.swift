@@ -96,7 +96,7 @@ class GridListController: UIViewController {
         var snap = diffDataSource.snapshot()
         snap.deleteAllItems()
         snap.appendSections([0])
-        snap.appendItems([
+        let gridJsons: [CollectionViewCell.Model] = [
             .init(originalJson: jsonOnlyOne),
             .init(originalJson: json0),
             .init(originalJson: json1),
@@ -105,7 +105,13 @@ class GridListController: UIViewController {
             .init(originalJson: json4),
             .init(originalJson: json5),
             .init(originalJson: json),
-        ])
+        ]
+            
+        gridJsons.forEach { model in
+            // 试一试缩放
+            model.gridJson = model.gridJson.scaled(toSize: .init(width: view.frame.width - 2, height: view.frame.width - 2))
+        }
+        snap.appendItems(gridJsons)
         diffDataSource.apply(snap)
     }
     
@@ -195,8 +201,8 @@ let json0: String = """
 {
     "width": 300,
     "height": 300,
-    "borderWidth": 20,
-    "lineWidth": 20,
+    "borderWidth": 10,
+    "lineWidth": 10,
     "item": {
         "type": "line",
         "key": 0,
@@ -233,7 +239,7 @@ let json1: String = """
     "width": 300,
     "height": 300,
     "borderWidth": 10,
-    "lineWidth": 8,
+    "lineWidth": 10,
     "item": {
         "type": "line",
         "key": 0,
@@ -293,7 +299,7 @@ let json2: String = """
     "width": 300,
     "height": 300,
     "borderWidth": 10,
-    "lineWidth": 5,
+    "lineWidth": 10,
     "item": {
         "type": "line",
         "key": 0,
@@ -442,8 +448,8 @@ let json4: String = """
 {
     "width": 300,
     "height": 300,
-    "borderWidth": 5,
-    "lineWidth": 5,
+    "borderWidth": 10,
+    "lineWidth": 10,
     "item": {
         "type": "line",
         "key": 0,
@@ -526,8 +532,8 @@ let json5 = """
     "width": 300,
     "height": 300,
     "borderWidth": 10,
-    "lineWidth": 20,
-    "cornerRadius": 10,
+    "lineWidth": 10,
+    "cornerRadius": 0,
     "item": {
         "type": "line",
         "key": 0,
@@ -619,7 +625,7 @@ let json: String = """
     "height": 300,
     "borderWidth": 10,
     "lineWidth": 10,
-    "cornerRadius": 10,
+    "cornerRadius": 0,
     "item": {
         "type": "line",
         "key": 0,

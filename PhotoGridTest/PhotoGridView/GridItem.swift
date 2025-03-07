@@ -13,7 +13,12 @@ protocol FromJSON: AnyObject {
     func toJson() -> [String: Any]
 }
 
-class GridJson: FromJSON {
+protocol Scalable: AnyObject {
+    associatedtype Result
+    func scaled(_ scaleX: CGFloat, scaleY: CGFloat) -> Result
+}
+
+class GridJson: FromJSON, Scalable {
     let width: CGFloat
     let height: CGFloat
     
@@ -39,7 +44,14 @@ class GridJson: FromJSON {
         let borderWidth = json["borderWidth"] as? CGFloat ?? 0
         let lineWidth = json["lineWidth"] as? CGFloat ?? 0
         let cornerRadius = json["cornerRadius"] as? CGFloat ?? 0
-        return .init(width: width, height: height, borderWidth: borderWidth, lineWidth: lineWidth, cornerRadius: cornerRadius, item: item)
+        return .init(
+            width: width,
+            height: height,
+            borderWidth: borderWidth,
+            lineWidth: lineWidth,
+            cornerRadius: cornerRadius,
+            item: item
+        )
     }
     
     func toJson() -> [String : Any] {
@@ -52,9 +64,26 @@ class GridJson: FromJSON {
             "item": item.toJson(),
         ]
     }
+    
+    func scaled(toSize size: CGSize) -> GridJson {
+        let scaleX = size.width / width
+        let scaleY = size.height / height
+        return GridJson(
+            width: size.width,
+            height: size.height,
+            borderWidth: borderWidth * scaleX, // 用x的比例吧，通常缩放会与y相同的
+            lineWidth: lineWidth * scaleX,
+            cornerRadius: cornerRadius * scaleX,
+            item: item.scaled(scaleX, scaleY: scaleY)
+        )
+    }
+    
+    func scaled(_ scaleX: CGFloat, scaleY: CGFloat) -> GridJson {
+        return scaled(toSize: .init(width: scaleX * width, height: scaleY * height))
+    }
 }
 
-class GridItem: FromJSON {
+class GridItem: FromJSON, Scalable {
     typealias Key = Int
     
     let key: Key
@@ -67,19 +96,11 @@ class GridItem: FromJSON {
         return .init(key: UUID().hashValue)
     }
     
-    var asDivider: GridDivider? {
-        return self as? GridDivider
-    }
-    
-    var asPolygon: GridPolygon? {
-        return self as? GridPolygon
-    }
-    
     class func fromJson(_ json: [String: Any]) -> GridItem {
         let type = json["type"] as? String ?? "";
         switch type {
         case "line":
-            return GridDivider.fromJson(json)
+            return GridLine.fromJson(json)
         case "polygon":
             return GridPolygon.fromJson(json)
         default:
@@ -90,9 +111,13 @@ class GridItem: FromJSON {
     func toJson() -> [String : Any] {
         return [:]
     }
+    
+    func scaled(_ scaleX: CGFloat, scaleY: CGFloat) -> GridItem {
+        return .init(key: key)
+    }
 }
     
-class GridDivider: GridItem {
+class GridLine: GridItem {
     let line: GGLine
     var left: GridItem
     var right: GridItem
@@ -108,7 +133,7 @@ class GridDivider: GridItem {
         super.init(key: key)
     }
     
-    override class func fromJson(_ json: [String: Any]) -> GridItem {
+    override class func fromJson(_ json: [String: Any]) -> GridLine {
         let key = json["key"] as? Int ?? 0
         
         let line = json["line"] as? [String: Any]
@@ -126,7 +151,14 @@ class GridDivider: GridItem {
         let left = GridItem.fromJson(json["left"] as? [String: Any] ?? [:])
         let right = GridItem.fromJson(json["right"] as? [String: Any] ?? [:])
         
-        return GridDivider(key: key, line: .init(x1: x1, y1: y1, x2: x2, y2: y2), left: left, right: right, offset: .init(x: dx, y: dy), syncGroup: syncGroup)
+        return .init(
+            key: key,
+            line: .init(x1: x1, y1: y1, x2: x2, y2: y2),
+            left: left,
+            right: right,
+            offset: .init(x: dx, y: dy),
+            syncGroup: syncGroup
+        )
     }
     
     override func toJson() -> [String : Any] {
@@ -148,6 +180,17 @@ class GridDivider: GridItem {
             "syncGroup": syncGroup,
         ]
     }
+    
+    override func scaled(_ scaleX: CGFloat, scaleY: CGFloat) -> GridLine {
+        return .init(
+            key: key,
+            line: .init(x1: line.x1 * scaleX, y1: line.y1 * scaleY, x2: line.x2 * scaleX, y2: line.y2 * scaleY),
+            left: left.scaled(scaleX, scaleY: scaleY),
+            right: right.scaled(scaleX, scaleY: scaleY),
+            offset: .init(x: offset.x * scaleX, y: offset.y * scaleY),
+            syncGroup: syncGroup
+        )
+    }
 }
 
 class GridPolygon: GridItem {
@@ -159,7 +202,7 @@ class GridPolygon: GridItem {
         super.init(key: key)
     }
     
-    override class func fromJson(_ json: [String : Any]) -> GridItem {
+    override class func fromJson(_ json: [String : Any]) -> GridPolygon {
         let key = json["key"] as? Int ?? 0
         let controllableKeys = json["controllableKeys"] as? [Key] ?? []
         return GridPolygon(key: key, controllableKeys: controllableKeys)
@@ -171,5 +214,9 @@ class GridPolygon: GridItem {
             "key": key,
             "controllableKeys": controllableKeys,
         ]
+    }
+    
+    override func scaled(_ scaleX: CGFloat, scaleY: CGFloat) -> GridPolygon {
+        return .init(key: key, controllableKeys: controllableKeys)
     }
 }

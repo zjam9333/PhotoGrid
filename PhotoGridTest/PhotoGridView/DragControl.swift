@@ -10,18 +10,19 @@ import UIKit
 class DragControl: UIView {
     var onDrag: ((UITouch) -> Void)?
     
-    let imageView = UIImageView()
+    let imageView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(imageView)
-        imageView.transform = .init(scaleX: 0.8, y: 0.8)
         imageView.contentMode = .scaleToFill
         imageView.snp.makeConstraints { make in
-            make.edges.equalTo(0)
+            make.center.equalToSuperview()
+            make.width.equalTo(30)
+            make.height.equalTo(10)
         }
-        imageView.tintColor = .white
-        imageView.image = UIImage(systemName: "mount.fill")?.withRenderingMode(.alwaysTemplate)
+        imageView.layer.cornerRadius = 5
+        imageView.backgroundColor = .cyan
     }
     
     required init?(coder: NSCoder) {

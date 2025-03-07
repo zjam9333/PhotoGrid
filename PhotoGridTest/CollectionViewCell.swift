@@ -33,8 +33,9 @@ class CollectionViewCell: UICollectionViewCell {
         super.layoutSubviews()
         redView.transform = .identity
         redView.frame = .init(x: 0, y: 0, width: model.gridJson.width, height: model.gridJson.height)
-        let scale = bounds.size.width / model.gridJson.width
-        redView.transform = .init(scaleX: scale, y: scale)
+        let scaleX = bounds.size.width / model.gridJson.width
+        let scaleY = bounds.size.height / model.gridJson.height
+        redView.transform = .init(scaleX: scaleX, y: scaleY)
         redView.frame = bounds
         
         redView.refreshSubviewsFrame()
@@ -42,7 +43,7 @@ class CollectionViewCell: UICollectionViewCell {
 }
 
 extension CollectionViewCell {
-    struct Model: Hashable {
+    class Model: Hashable {
         static func == (lhs: CollectionViewCell.Model, rhs: CollectionViewCell.Model) -> Bool {
             return lhs.id == rhs.id
         }
@@ -53,7 +54,7 @@ extension CollectionViewCell {
         
         let id = UUID()
         
-        let gridJson: GridJson
+        var gridJson: GridJson
         
         init(gridJson: GridJson) {
             self.gridJson = gridJson
