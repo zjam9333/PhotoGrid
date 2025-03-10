@@ -27,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		1C1C4D982D78539B002AF272 /* TestPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPathView.swift; sourceTree = "<group>"; };
+		1C1C4DD72D7E83C0002AF272 /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
 		1C2D94E32D5DC78B00130FBB /* PhotoGridTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoGridTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C2D94EA2D5DC78B00130FBB /* GridListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridListController.swift; sourceTree = "<group>"; };
@@ -44,7 +45,6 @@
 		1CD622E82D704510006F0B25 /* DragControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragControl.swift; sourceTree = "<group>"; };
 		1CD622EA2D7598E5006F0B25 /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
 		1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
-		1CD622EE2D75AF5C006F0B25 /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				1C2D950B2D5F56ED00130FBB /* README.md */,
-				1CD622EE2D75AF5C006F0B25 /* testimg.jpg */,
+				1C1C4DD72D7E83C0002AF272 /* testimg.jpg */,
 				1C2D94E52D5DC78B00130FBB /* PhotoGridTest */,
 				1C2D94E42D5DC78B00130FBB /* Products */,
 			);
