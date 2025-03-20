@@ -7,6 +7,7 @@
 
 import UIKit
 import QuickLook
+import Combine
 
 class GridViewController: UIViewController {
     
@@ -65,11 +66,32 @@ class GridViewController: UIViewController {
         redView.refreshSubviewsFrame()
     }
     
+    @objc func selectColor(_ sender: Any) {
+        let colorPick = UIColorPickerViewController()
+        colorPick.delegate = self
+        present(colorPick, animated: true)
+    }
+    
+    private var allSubscriptions: [AnyCancellable] = []
+    
     private var jsonURL: URL!
     private var redView: PhotoGridView!
     private var snapshowImageView: UIImageView!
-    var gridJson: GridJson!
-    var selectedImages: [UIImage] = []
+    
+    var gridJson: GridJson
+    var selectedImages: [UIImage]
+    
+    @Published private var borderColor: UIColor? = .red
+    
+    init(gridJson: GridJson, selectedImages: [UIImage]) {
+        self.gridJson = gridJson
+        self.selectedImages = selectedImages
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,7 +100,8 @@ class GridViewController: UIViewController {
         
         self.navigationItem.title = "Grid Detail"
         
-        redView = PhotoGridView(json: gridJson)
+        redView = PhotoGridView(json: gridJson).property(\.borderColor, binding: $borderColor, storeIn: &allSubscriptions)
+        
         view.addSubview(redView)
         
         redView.snp.makeConstraints { make in
@@ -195,6 +218,28 @@ class GridViewController: UIViewController {
                 stack.spacing = 10
                 return stack
             }(),
+            {
+                let stack = UIStackView(arrangedSubviews: [
+                    {
+                        let b = UILabel()
+                        b.text = "颜色"
+                        b.textColor = .black
+                        return b
+                    }(),
+                    {
+                        let b = UIControl().property(\.backgroundColor, binding: $borderColor, storeIn: &allSubscriptions)
+                        b.addTarget(self, action: #selector(selectColor), for: .touchUpInside)
+                        b.snp.makeConstraints { make in
+                            make.width.equalTo(120)
+                            make.height.equalTo(30)
+                        }
+                        return b
+                    }(),
+                ])
+                stack.axis = .horizontal
+                stack.spacing = 10
+                return stack
+            }(),
         ])
         stack.axis = .vertical
         stack.spacing = 10
@@ -211,5 +256,11 @@ extension GridViewController: QLPreviewControllerDataSource {
     }
     func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> any QLPreviewItem {
         jsonURL as QLPreviewItem
+    }
+}
+
+extension GridViewController: UIColorPickerViewControllerDelegate {
+    func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
+        borderColor = color
     }
 }

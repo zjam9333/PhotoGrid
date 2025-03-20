@@ -72,6 +72,15 @@ class PhotoGridView: UIView {
         contentView.backgroundColor = .black
     }
     
+    var borderColor: UIColor? {
+        set {
+            contentView.backgroundColor = newValue
+        }
+        get {
+            return contentView.backgroundColor
+        }
+    }
+    
     var snapshotView: UIView {
         return contentView
     }

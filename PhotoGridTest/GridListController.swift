@@ -58,14 +58,6 @@ class GridListController: UIViewController {
             make.edges.equalTo(0)
         }
         
-        let test = TestPathView()
-        view.addSubview(test)
-        test.snp.makeConstraints { make in
-            make.bottom.equalTo(-60)
-            make.height.width.equalTo(200)
-            make.left.equalTo(40)
-        }
-        
         reloadAll()
     }
     
@@ -79,10 +71,8 @@ class GridListController: UIViewController {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detail = GridViewController()
         let model = diffDataSource.itemIdentifier(for: indexPath)!
-        detail.gridJson = model.gridJson
-        detail.selectedImages = selectedImages
+        let detail = GridViewController(gridJson: model.gridJson, selectedImages: selectedImages)
         navigationController?.pushViewController(detail, animated: true)
     }
     
