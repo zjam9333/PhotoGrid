@@ -20,11 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = UINavigationController(rootViewController: GridListController())
+//        window?.rootViewController = UINavigationController(rootViewController: GridListController())
         // 用swiftui
-//        window?.rootViewController = UIHostingController(rootView: NavigationStack {
-//            GridListView()
-//        })
+        window?.rootViewController = UIHostingController(rootView: NavigationStack {
+            GridListView()
+        })
         window?.makeKeyAndVisible()
     }
 

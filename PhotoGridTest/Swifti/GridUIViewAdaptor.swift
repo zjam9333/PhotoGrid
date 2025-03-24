@@ -16,9 +16,11 @@ struct GridUIViewAdaptor: UIViewRepresentable {
     }
     
     var model: Model
+    var viewInstanceOnCreated: ((UIViewType) -> Void)?
     
     func makeUIView(context: Context) -> PhotoGridView {
         let uiView = PhotoGridView(json: model.json)
+        viewInstanceOnCreated?(uiView)
         return uiView
     }
     
