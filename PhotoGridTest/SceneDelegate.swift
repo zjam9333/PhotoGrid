@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -20,6 +21,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: scene)
         window?.rootViewController = UINavigationController(rootViewController: GridListController())
+        // 用swiftui
+//        window?.rootViewController = UIHostingController(rootView: NavigationStack {
+//            GridListView()
+//        })
         window?.makeKeyAndVisible()
     }
 

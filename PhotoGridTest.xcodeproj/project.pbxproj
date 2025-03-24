@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C05CB002D8D77C0006504E1 /* GridDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CAFF2D8D77C0006504E1 /* GridDetailView.swift */; };
+		1C05CB032D90FE65006504E1 /* GridUIViewAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CB022D90FE65006504E1 /* GridUIViewAdaptor.swift */; };
+		1C05CB052D90FF57006504E1 /* GridListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CB042D90FF57006504E1 /* GridListView.swift */; };
 		1C1C4D992D78539F002AF272 /* TestPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C4D982D78539B002AF272 /* TestPathView.swift */; };
 		1C2D94E72D5DC78B00130FBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */; };
 		1C2D94EB2D5DC78B00130FBB /* GridListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94EA2D5DC78B00130FBB /* GridListController.swift */; };
@@ -27,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C05CAFF2D8D77C0006504E1 /* GridDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridDetailView.swift; sourceTree = "<group>"; };
+		1C05CB022D90FE65006504E1 /* GridUIViewAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridUIViewAdaptor.swift; sourceTree = "<group>"; };
+		1C05CB042D90FF57006504E1 /* GridListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridListView.swift; sourceTree = "<group>"; };
 		1C1C4D982D78539B002AF272 /* TestPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPathView.swift; sourceTree = "<group>"; };
 		1C1C4DD72D7E83C0002AF272 /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
 		1C2D94E32D5DC78B00130FBB /* PhotoGridTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoGridTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +67,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C05CB062D913AA1006504E1 /* Swifti */ = {
+			isa = PBXGroup;
+			children = (
+				1C05CB042D90FF57006504E1 /* GridListView.swift */,
+				1C05CAFF2D8D77C0006504E1 /* GridDetailView.swift */,
+				1C05CB022D90FE65006504E1 /* GridUIViewAdaptor.swift */,
+			);
+			path = Swifti;
+			sourceTree = "<group>";
+		};
+		1C05CB072D913DBE006504E1 /* UIkit */ = {
+			isa = PBXGroup;
+			children = (
+				1C1C4D982D78539B002AF272 /* TestPathView.swift */,
+				1C2D94EA2D5DC78B00130FBB /* GridListController.swift */,
+				1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */,
+				1CD622EA2D7598E5006F0B25 /* GridViewController.swift */,
+				1CB3526E2D8BB8C9000056EC /* ModifySelfProtocol.swift */,
+			);
+			path = UIkit;
+			sourceTree = "<group>";
+		};
 		1C2D94DA2D5DC78B00130FBB = {
 			isa = PBXGroup;
 			children = (
@@ -85,11 +113,8 @@
 				1C2D94FA2D5DC79400130FBB /* PhotoGridView */,
 				1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */,
 				1C5C21ED2D77FBAD00E29785 /* SceneDelegate.swift */,
-				1C2D94EA2D5DC78B00130FBB /* GridListController.swift */,
-				1C1C4D982D78539B002AF272 /* TestPathView.swift */,
-				1CD622EC2D759B47006F0B25 /* CollectionViewCell.swift */,
-				1CD622EA2D7598E5006F0B25 /* GridViewController.swift */,
-				1CB3526E2D8BB8C9000056EC /* ModifySelfProtocol.swift */,
+				1C05CB062D913AA1006504E1 /* Swifti */,
+				1C05CB072D913DBE006504E1 /* UIkit */,
 				1C2D94EF2D5DC78C00130FBB /* Assets.xcassets */,
 				1C2D94F12D5DC78C00130FBB /* LaunchScreen.storyboard */,
 				1C2D94F42D5DC78C00130FBB /* Info.plist */,
@@ -199,8 +224,11 @@
 				1C2D95012D5DEB4700130FBB /* MathTools.swift in Sources */,
 				1C2D95072D5F4E4300130FBB /* ShapeOverlayView.swift in Sources */,
 				1C1C4D992D78539F002AF272 /* TestPathView.swift in Sources */,
+				1C05CB032D90FE65006504E1 /* GridUIViewAdaptor.swift in Sources */,
+				1C05CB052D90FF57006504E1 /* GridListView.swift in Sources */,
 				1CD622E92D704510006F0B25 /* DragControl.swift in Sources */,
 				1C5C21EE2D77FBAD00E29785 /* SceneDelegate.swift in Sources */,
+				1C05CB002D8D77C0006504E1 /* GridDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +379,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -383,7 +411,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

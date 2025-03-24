@@ -91,14 +91,21 @@ class PhotoGridView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        let wasDiff = contentView.frame != bounds
         overlayView.frame = bounds
         contentView.frame = bounds
+        if (wasDiff) {
+            refreshSubviewsFrame()
+        }
     }
     
     func refreshSubviewsFrame() {
         var rect = bounds
         if json.borderWidth > 0 {
             rect = rect.insetBy(dx: json.borderWidth, dy: json.borderWidth)
+        }
+        guard rect.isNull == false else {
+            return
         }
         let poly = [
             rect.topLeft,
