@@ -16,23 +16,19 @@ class ShapeOverlayView: UIView {
         return layer as? CAShapeLayer
     }
     
-    var overlayPolygon: [CGPoint] = [] {
-        didSet {
+    func drawOverlayPolygon(_ polygon: [CGPoint], cornerRadius: CGFloat) {
+        do {
             shapeLayer?.removeAnimation(forKey: "line")
-            guard let first = overlayPolygon.first else {
+            guard polygon.count >= 3 else {
                 shapeLayer?.path = nil
                 return
             }
             let path = UIBezierPath()
-            path.move(to: first)
-            for p in overlayPolygon.dropFirst() {
-                path.addLine(to: p)
-            }
-            path.close()
+            path.addPolygon(polygon, cornerRadius: cornerRadius)
             shapeLayer?.path = path.cgPath
             shapeLayer?.fillColor = UIColor.clear.cgColor
             shapeLayer?.strokeColor = UIColor.cyan.cgColor
-            shapeLayer?.lineWidth = 2
+            shapeLayer?.lineWidth = 8
             shapeLayer?.lineDashPattern = [8, 4]
             
             let animation = CABasicAnimation(keyPath: "lineDashPhase")
@@ -42,6 +38,11 @@ class ShapeOverlayView: UIView {
             animation.repeatCount = .infinity
             shapeLayer?.add(animation, forKey: "line")
         }
+    }
+    
+    func cleanOverlayPolygon() {
+        shapeLayer?.removeAnimation(forKey: "line")
+        shapeLayer?.path = nil
     }
     
     deinit {

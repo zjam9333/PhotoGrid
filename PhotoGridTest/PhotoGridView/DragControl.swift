@@ -27,10 +27,11 @@ class DragControl: UIView {
         onDrag?(first)
     }
     
-    func locate(p1: CGPoint, p2: CGPoint) {
+    func locate(p1: CGPoint, p2: CGPoint, lineWidth: CGFloat) {
         let line = GGLine(p1: p1, p2: p2)
-        let lineRight = line.shifted(byDistance: 5)
-        let lineLeft = line.shifted(byDistance: -5)
+        let usingWidth = max(abs(lineWidth), 10) / 2
+        let lineRight = line.shifted(byDistance: usingWidth)
+        let lineLeft = line.shifted(byDistance: -usingWidth)
         let points = [lineRight.p2, lineRight.p1, lineLeft.p1, lineLeft.p2]
         
         guard let top = points.top, let bottom = points.bottom, let left = points.left, let right = points.right else {

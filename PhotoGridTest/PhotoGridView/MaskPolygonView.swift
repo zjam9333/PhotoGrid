@@ -55,40 +55,7 @@ class MaskPolygonView: UIView {
         }
         
         let path = UIBezierPath()
-        let begin = usingPoints[0].center(with: usingPoints[1])
-        path.move(to: begin)
-        for i in 0..<usingPoints.count {
-            let p2 = usingPoints[(i + 1) % usingPoints.count]
-            let p1 = usingPoints[i].center(with: p2)
-            let p3 = usingPoints[(i + 2) % usingPoints.count].center(with: p2)
-            path.addLine(to: p1.center(with: p2))
-            if cornerRadius > 0 {
-                let vec1 = p1 - p2
-                let vec2 = p3 - p2
-                let dotProd = vec1.dotProduct(with: vec2)
-                let len1 = vec1.length()
-                let len2 = vec2.length()
-                let cosTheta = dotProd / (len1 * len2)
-                let angle = acos(cosTheta)
-                
-                let minLen = min(len1, len2)
-                let maxRadius = minLen * tan(angle / 2)
-                
-                let usingRadius = min(cornerRadius, maxRadius)
-                
-                let line0 = GGLine(p1: p1, p2: p2).shifted(byDistance: usingRadius)
-                let line1 = GGLine(p1: p2, p2: p3).shifted(byDistance: usingRadius)
-                
-                let circleCenter = line0.intersection(other: line1) ?? .zero
-                
-                let startAngle = atan2(vec1.x, -vec1.y)
-                let endAngle = startAngle + .pi - angle
-                path.addArc(withCenter: circleCenter, radius: usingRadius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
-            } else {
-                path.addLine(to: p2)
-            }
-            path.addLine(to: p2.center(with: p3))
-        }
+        path.addPolygon(usingPoints, cornerRadius: cornerRadius)
         maskLayer.path = path.cgPath
     }
     

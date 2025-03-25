@@ -30,7 +30,7 @@ class PhotoGridView: UIView {
         cacheDragControl.values.forEach { v in
             v.isHidden = true
         }
-        overlayView.overlayPolygon = []
+        overlayView.cleanOverlayPolygon()
 //        cachePolyViews.removeAll()
 //        cacheDragControl.removeAll()
         currentOverlayItem = nil
@@ -147,17 +147,17 @@ class PhotoGridView: UIView {
                 }
                 if item?.key == self?.currentOverlayItem?.key {
                     self?.currentOverlayItem = nil
-                    self?.overlayView.overlayPolygon = []
+                    self?.overlayView.cleanOverlayPolygon()
                 } else {
                     self?.currentOverlayItem = item
-                    self?.overlayView.overlayPolygon = polygon
+                    self?.overlayView.drawOverlayPolygon(polygon, cornerRadius: self?.json.cornerRadius ?? 0)
                     for key in controllableKeys {
                         self?.cacheDragControl[key]?.isHidden = false
                     }
                 }
             }
             if (item.key == currentOverlayItem?.key) {
-                overlayView.overlayPolygon = polygon
+                overlayView.drawOverlayPolygon(polygon, cornerRadius: json.cornerRadius)
             }
             return
         }
@@ -189,7 +189,7 @@ class PhotoGridView: UIView {
                 self?.refreshSubviewsFrame()
             }
             if intersects.count >= 2 {
-                dragView.locate(p1: intersects[0], p2: intersects[1])
+                dragView.locate(p1: intersects[0], p2: intersects[1], lineWidth: json.lineWidth)
                 //            drag.isHidden = false
             } else {
                 //            drag.isHidden = true

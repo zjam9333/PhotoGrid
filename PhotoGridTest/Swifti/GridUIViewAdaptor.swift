@@ -25,7 +25,9 @@ struct GridUIViewAdaptor: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: PhotoGridView, context: Context) {
-        uiView.updateGrid(json: model.json)
+        if (uiView.json !== model.json) {
+            uiView.updateGrid(json: model.json)
+        }
         uiView.contentGetter = { i in
             guard i < model.images.count else {
                 return nil
