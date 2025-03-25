@@ -188,9 +188,8 @@ class PhotoGridView: UIView {
                 
                 self?.refreshSubviewsFrame()
             }
-            dragView.transform = .init(rotationAngle: atan2(line.p1.x - line.p2.x, line.p2.y - line.p1.y) + .pi / 2)
             if intersects.count >= 2 {
-                dragView.center = GGLine(p1: intersects[0], p2: intersects[1]).center
+                dragView.locate(p1: intersects[0], p2: intersects[1])
                 //            drag.isHidden = false
             } else {
                 //            drag.isHidden = true

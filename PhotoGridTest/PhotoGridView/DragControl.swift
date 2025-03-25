@@ -10,23 +10,14 @@ import UIKit
 class DragControl: UIView {
     var onDrag: ((UITouch) -> Void)?
     
-    let imageView = UIView()
+    private var maskPolyPoints: [CGPoint] = []
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        addSubview(imageView)
-        imageView.contentMode = .scaleToFill
-        imageView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(30)
-            make.height.equalTo(10)
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let pInside = point.liesInside(polygon: maskPolyPoints)
+        if !pInside {
+            return nil
         }
-        imageView.layer.cornerRadius = 5
-        imageView.backgroundColor = .cyan
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        return super.hitTest(point, with: event)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -34,5 +25,23 @@ class DragControl: UIView {
             return
         }
         onDrag?(first)
+    }
+    
+    func locate(p1: CGPoint, p2: CGPoint) {
+        let line = GGLine(p1: p1, p2: p2)
+        let lineRight = line.shifted(byDistance: 5)
+        let lineLeft = line.shifted(byDistance: -5)
+        let points = [lineRight.p2, lineRight.p1, lineLeft.p1, lineLeft.p2]
+        
+        guard let top = points.top, let bottom = points.bottom, let left = points.left, let right = points.right else {
+            return;
+        }
+        
+        let fra = CGRect(top: top, left: left, bottom: bottom, right: right)
+        frame = fra
+        
+        maskPolyPoints = points.map { p in
+            return CGPoint(x: p.x - fra.origin.x, y: p.y - fra.origin.y)
+        }
     }
 }
