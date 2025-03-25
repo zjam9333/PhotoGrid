@@ -16,11 +16,10 @@ struct GridDetailView: View {
     
     @Binding var model: GridUIViewAdaptor.Model
     
-    @State var snapshot: UIImage?
-    
     @State var showQuickLook = false
     @State var showColorPicker = false
     @State var exportJsonFile: URL?
+    @State var exportPngFile: URL?
     
     @StateObject var refs: Refs = Refs()
     
@@ -70,13 +69,21 @@ struct GridDetailView: View {
                         print("drawHierarchy", b)
                     }
                     print("image", image)
-                    snapshot = image
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        snapshot = nil
+                    guard let pngData = image.pngData() else {
+                        return
+                    }
+                    let filePath = NSTemporaryDirectory() + "snapshot.png"
+                    let fileURL = URL(fileURLWithPath: filePath)
+                    do {
+                        try pngData.write(to: fileURL, options: .atomic)
+                        exportPngFile = fileURL
+                    } catch {
+                        
                     }
                 } label: {
                     Text("截图打断点看看")
                 }
+                .quickLookPreview($exportPngFile)
                 
                 HStack {
                     Text("边框")
@@ -134,17 +141,6 @@ struct GridDetailView: View {
         }
         .navigationTitle("Grid Detail")
         .navigationBarTitleDisplayMode(.inline)
-        .overlay(alignment: .bottomLeading) {
-            if let snapshot = snapshot {
-                HStack {
-                    Image(uiImage: snapshot)
-                        .resizable()
-                        .frame(width: 200, height: 200)
-                        .padding([.leading, .bottom], 10)
-                    Spacer()
-                }
-            }
-        }
     }
 }
 

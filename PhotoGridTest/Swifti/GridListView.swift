@@ -152,7 +152,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                 }
             }
             group.notify(queue: .main) { [weak self] in
-                self?.parent.images = images
+                self?.parent.images.append(contentsOf: images)
             }
         }
     }
