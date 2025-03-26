@@ -10,6 +10,7 @@
 		1C05CB002D8D77C0006504E1 /* GridDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CAFF2D8D77C0006504E1 /* GridDetailView.swift */; };
 		1C05CB032D90FE65006504E1 /* GridUIViewAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CB022D90FE65006504E1 /* GridUIViewAdaptor.swift */; };
 		1C05CB052D90FF57006504E1 /* GridListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CB042D90FF57006504E1 /* GridListView.swift */; };
+		1C05CB0B2D93D502006504E1 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C05CB0A2D93D502006504E1 /* ImagePicker.swift */; };
 		1C1C4D992D78539F002AF272 /* TestPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C4D982D78539B002AF272 /* TestPathView.swift */; };
 		1C2D94E72D5DC78B00130FBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94E62D5DC78B00130FBB /* AppDelegate.swift */; };
 		1C2D94EB2D5DC78B00130FBB /* GridListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2D94EA2D5DC78B00130FBB /* GridListController.swift */; };
@@ -33,6 +34,7 @@
 		1C05CAFF2D8D77C0006504E1 /* GridDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridDetailView.swift; sourceTree = "<group>"; };
 		1C05CB022D90FE65006504E1 /* GridUIViewAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridUIViewAdaptor.swift; sourceTree = "<group>"; };
 		1C05CB042D90FF57006504E1 /* GridListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridListView.swift; sourceTree = "<group>"; };
+		1C05CB0A2D93D502006504E1 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		1C1C4D982D78539B002AF272 /* TestPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPathView.swift; sourceTree = "<group>"; };
 		1C1C4DD72D7E83C0002AF272 /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
 		1C2D94E32D5DC78B00130FBB /* PhotoGridTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoGridTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +75,7 @@
 				1C05CB042D90FF57006504E1 /* GridListView.swift */,
 				1C05CAFF2D8D77C0006504E1 /* GridDetailView.swift */,
 				1C05CB022D90FE65006504E1 /* GridUIViewAdaptor.swift */,
+				1C05CB0A2D93D502006504E1 /* ImagePicker.swift */,
 			);
 			path = Swifti;
 			sourceTree = "<group>";
@@ -125,13 +128,13 @@
 		1C2D94FA2D5DC79400130FBB /* PhotoGridView */ = {
 			isa = PBXGroup;
 			children = (
-				1C2D94FB2D5DD4FA00130FBB /* PhotoGridView.swift */,
-				1C2D95002D5DEB4700130FBB /* MathTools.swift */,
+				1CD622E82D704510006F0B25 /* DragControl.swift */,
+				1C2D95082D5F501B00130FBB /* GridItem.swift */,
 				1C2D95022D5DFFF200130FBB /* MaskPolygonView.swift */,
+				1C2D95002D5DEB4700130FBB /* MathTools.swift */,
+				1C2D94FB2D5DD4FA00130FBB /* PhotoGridView.swift */,
 				1C2D95042D5F2EAA00130FBB /* PresetColors.swift */,
 				1C2D95062D5F4E4300130FBB /* ShapeOverlayView.swift */,
-				1C2D95082D5F501B00130FBB /* GridItem.swift */,
-				1CD622E82D704510006F0B25 /* DragControl.swift */,
 			);
 			path = PhotoGridView;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 				1CD622EB2D7598E5006F0B25 /* GridViewController.swift in Sources */,
 				1C2D95092D5F501B00130FBB /* GridItem.swift in Sources */,
 				1CD622ED2D759B47006F0B25 /* CollectionViewCell.swift in Sources */,
+				1C05CB0B2D93D502006504E1 /* ImagePicker.swift in Sources */,
 				1CB3526F2D8BB8C9000056EC /* ModifySelfProtocol.swift in Sources */,
 				1C2D94EB2D5DC78B00130FBB /* GridListController.swift in Sources */,
 				1C2D95052D5F2EAA00130FBB /* PresetColors.swift in Sources */,

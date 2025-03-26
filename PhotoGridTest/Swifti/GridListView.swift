@@ -34,7 +34,7 @@ struct GridListView: View {
         }
     }
     
-    @State var gridModel: GridUIViewAdaptor.Model = .init(json: .fromJson([:]), images: [], borderColor: .blue)
+    @State var gridModel: GridUIViewAdaptor.Model = .init(json: .fromJson([:]), images: [:], borderColor: .blue)
     @State var models: [Model] = []
     
     @State var showingImagePicker = false
@@ -69,7 +69,16 @@ struct GridListView: View {
             }
         }
         .fullScreenCover(isPresented: $showingImagePicker) {
-            ImagePicker(images: $gridModel.images)
+            ImagePicker(selectionLimit: 0) { imgs in
+//                let
+//                gridModel.images.append(contentsOf: new)
+                var dict = gridModel.images
+                let offset = dict.count
+                for i in 0..<imgs.count {
+                    dict[i + offset] = imgs[i]
+                }
+                gridModel.images = dict
+            }
         }.onAppear {
             
             if viewDidLoad == false {
@@ -114,66 +123,12 @@ struct GridListView: View {
             .init(originalJson: json),
         ]
         models = gridJsons
-        gridModel = .init(json: GridJson(width: 300, height: 300, item: .random()), images: [], borderColor: .black)
+        gridModel = .init(json: GridJson(width: 300, height: 300, item: .random()), images: [:], borderColor: .black)
     }
 }
 
 #Preview {
     NavigationStack {
         GridListView()
-    }
-}
-
-import PhotosUI
-
-struct ImagePicker: UIViewControllerRepresentable {
-    typealias UIViewControllerType = PHPickerViewController
-    
-    class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        var parent: ImagePicker
-        
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            picker.dismiss(animated: true)
-            let group = DispatchGroup()
-            var images: [UIImage] = []
-            for result in results {
-                group.enter()
-                result.itemProvider.loadObject(ofClass: UIImage.self) { image, error in
-                    defer {
-                        group.leave()
-                    }
-                    if let image = image as? UIImage {
-                        images.append(image)
-                    }
-                }
-            }
-            group.notify(queue: .main) { [weak self] in
-                self?.parent.images.append(contentsOf: images)
-            }
-        }
-    }
-    
-    @Binding var images: [UIImage]
-    
-    func makeUIViewController(context: Context) -> PHPickerViewController {
-        var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
-        config.selectionLimit = 4
-        config.filter = .images
-        
-        let picker = PHPickerViewController(configuration: config)
-        picker.delegate = context.coordinator
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {
-        
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
     }
 }

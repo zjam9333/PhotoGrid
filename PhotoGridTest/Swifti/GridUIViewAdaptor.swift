@@ -11,12 +11,13 @@ struct GridUIViewAdaptor: UIViewRepresentable {
     struct Model {
         var version = UUID()
         var json: GridJson
-        var images: [UIImage]
+        var images: [Int: UIImage]
         var borderColor: UIColor
     }
     
     var model: Model
     var viewInstanceOnCreated: ((UIViewType) -> Void)?
+    var onPolygonSelect: ((GridPolygon.Key?) -> Void)?
     
     func makeUIView(context: Context) -> PhotoGridView {
         let uiView = PhotoGridView(json: model.json)
@@ -29,10 +30,10 @@ struct GridUIViewAdaptor: UIViewRepresentable {
             uiView.updateGrid(json: model.json)
         }
         uiView.contentGetter = { i in
-            guard i < model.images.count else {
-                return nil
-            }
             return model.images[i]
+        }
+        uiView.onPolygonSelect = { i in
+            onPolygonSelect?(i)
         }
         uiView.borderColor = model.borderColor
         uiView.refreshSubviewsFrame()

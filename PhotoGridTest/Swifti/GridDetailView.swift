@@ -7,19 +7,25 @@
 
 import SwiftUI
 import QuickLook
+import Photos
+
+extension UIImage: @retroactive Identifiable {
+}
 
 struct GridDetailView: View {
     
     class Refs: ObservableObject {
         var gridUIView: PhotoGridView? = nil
+        @Published var exportJsonFile: URL?
+        @Published var snapshotImage: UIImage?
+        @Published var selectedPolygon: GridItem.Key?
     }
     
     @Binding var model: GridUIViewAdaptor.Model
     
     @State var showQuickLook = false
     @State var showColorPicker = false
-    @State var exportJsonFile: URL?
-    @State var exportPngFile: URL?
+    @State var showImagePicker = false
     
     @StateObject var refs: Refs = Refs()
     
@@ -28,9 +34,11 @@ struct GridDetailView: View {
         VStack {
             Spacer().frame(height: 40)
             
-            GridUIViewAdaptor(model: model, viewInstanceOnCreated: { gridv in
+            GridUIViewAdaptor(model: model) { gridv in
                 refs.gridUIView = gridv
-            })
+            } onPolygonSelect: { key in
+                refs.selectedPolygon = key
+            }
             .frame(width: model.json.width, height: model.json.height)
             .scaleEffect(CGSize(width: width / model.json.width, height: width / model.json.height))
             .frame(width: width, height: width)
@@ -50,14 +58,15 @@ struct GridDetailView: View {
                         let filePath = NSTemporaryDirectory() + "layout.json"
                         let fileURL = URL(fileURLWithPath: filePath)
                         try jsonData.write(to: fileURL, options: .atomic)
-                        exportJsonFile = fileURL
+                        refs.exportJsonFile = fileURL
                     } catch {
                         
                     }
                 } label: {
                     Text("导出Json看看")
                 }
-                .quickLookPreview($exportJsonFile)
+                .quickLookPreview($refs.exportJsonFile)
+                Spacer().frame(height: 10)
                 
                 Button {
                     guard let redView = refs.gridUIView?.snapshotView else {
@@ -68,22 +77,33 @@ struct GridDetailView: View {
                         let b = redView.drawHierarchy(in: redView.bounds, afterScreenUpdates: false)
                         print("drawHierarchy", b)
                     }
+                    refs.snapshotImage = image
                     print("image", image)
-                    guard let pngData = image.pngData() else {
-                        return
-                    }
-                    let filePath = NSTemporaryDirectory() + "snapshot.png"
-                    let fileURL = URL(fileURLWithPath: filePath)
-                    do {
-                        try pngData.write(to: fileURL, options: .atomic)
-                        exportPngFile = fileURL
-                    } catch {
-                        
-                    }
                 } label: {
                     Text("截图打断点看看")
                 }
-                .quickLookPreview($exportPngFile)
+                .sheet(item: $refs.snapshotImage) { image in
+                    VStack {
+                        Image(uiImage: image)
+                            .resizable()
+                            .frame(width: 300, height: 300)
+                        Spacer().frame(height: 30)
+                        Button {
+                            Task {
+                                try? await PHPhotoLibrary.shared().performChanges {
+                                    let request = PHAssetCreationRequest.forAsset()
+                                    request.addResource(with: .photo, data: image.pngData()!, options: nil)
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "square.and.arrow.down")
+                                Text("保存")
+                            }
+                        }
+                    }
+                }
+                Spacer().frame(height: 10)
                 
                 HStack {
                     Text("边框")
@@ -141,6 +161,26 @@ struct GridDetailView: View {
         }
         .navigationTitle("Grid Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let key = refs.selectedPolygon {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showImagePicker = true
+                    } label: {
+                        Text("换图")
+                    }
+                    .fullScreenCover(isPresented: $showImagePicker) {
+                        ImagePicker(selectionLimit: 1) { imgs in
+                            guard let fir = imgs.first else {
+                                return
+                            }
+                            model.images[key] = fir
+                            model.version = UUID()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -190,7 +230,7 @@ struct GridDetailView: View {
             let _json = GridJson.fromJson(try! JSONSerialization.jsonObject(with: _json0.data(using: .utf8)!) as! [String: Any])
             return _json
         }(),
-        images: [],
+        images: [:],
         borderColor: .systemPink
     )
     NavigationStack {

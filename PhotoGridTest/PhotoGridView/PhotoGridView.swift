@@ -9,6 +9,7 @@ import UIKit
 
 class PhotoGridView: UIView {
     var contentGetter: ((GridItem.Key) -> Any?)?
+    var onPolygonSelect: ((GridItem.Key?) -> Void)?
     
     private var cachePolyViews: [GridItem.Key: ImagePolygonView] = [:]
     private var cacheDragControl: [GridItem.Key: DragControl] = [:]
@@ -148,12 +149,14 @@ class PhotoGridView: UIView {
                 if item?.key == self?.currentOverlayItem?.key {
                     self?.currentOverlayItem = nil
                     self?.overlayView.cleanOverlayPolygon()
+                    self?.onPolygonSelect?(nil)
                 } else {
                     self?.currentOverlayItem = item
                     self?.overlayView.drawOverlayPolygon(polygon, cornerRadius: self?.json.cornerRadius ?? 0)
                     for key in controllableKeys {
                         self?.cacheDragControl[key]?.isHidden = false
                     }
+                    self?.onPolygonSelect?(item?.key)
                 }
             }
             if (item.key == currentOverlayItem?.key) {
